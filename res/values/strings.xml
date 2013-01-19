@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Home-->
+    <string name="app_name">Shift Calendar</string>
+    <string name="manageShiftsBtnTitle">Manage Shifts</string>
+    <string name="inputShiftsBtnTitle">Input Shifts</string>
+
+
+    <!--Manage Shifts-->
+    <string name="manageShiftsTitle">Manage Shifts</string>
+    <string name="menuAdd">Add</string>
+
+    <!--Add Shift-->
+    <string name="addShiftTitle">New Shift</string>
+    <string name="shiftNameHint">Name</string>
+    <string name="shiftTimeLabel">Time</string>
+    <string name="shiftTimeFromHint">From</string>
+    <string name="shiftTimeDelimiter">~</string>
+    <string name="shiftTimeToHint">To</string>
+
+    <!--Shift Input-->
+    <string name="shiftInputTitle">Shift Input</string>
+</resources>

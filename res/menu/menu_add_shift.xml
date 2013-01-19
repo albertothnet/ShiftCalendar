@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/addShiftCancel"
+            android:title="@string/menuAdd"
+            android:showAsAction="ifRoom"
+            android:orderInCategory="0"
+            android:icon="@drawable/ic_clear_search_api_holo_light"/>
+    <item
+            android:id="@+id/addShiftDone"
+            android:title="@string/menuAdd"
+            android:showAsAction="ifRoom"
+            android:orderInCategory="0"
+            android:icon="@drawable/ic_cab_done_holo_light"/>
+
+</menu>
