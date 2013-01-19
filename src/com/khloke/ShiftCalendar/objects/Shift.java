@@ -103,6 +103,7 @@ public class Shift implements DatabaseObject {
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getWritableDatabase();
         ContentValues contentValues = toContentValues();
+        contentValues.remove(ID_COLUMN);
         db.insert(TABLE_NAME, null, contentValues);
     }
 

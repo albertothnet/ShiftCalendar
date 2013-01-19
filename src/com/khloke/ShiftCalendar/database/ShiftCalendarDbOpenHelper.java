@@ -16,19 +16,17 @@ public class ShiftCalendarDbOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ShiftCalendar";
     public static final String CREATE_SHIFTCALENDAR_TABLE_STATEMENT =
             "CREATE  TABLE `ShiftCalendar` (" +
-                    "  `id` INT NOT NULL ," +
+                    "  `id` INTEGER PRIMARY KEY ," +
                     "  `shiftId` INT NOT NULL ," +
-                    "  `date` text NOT NULL ," +
-                    "  PRIMARY KEY (`id`)" +
+                    "  `date` text NOT NULL" +
                     ");";
     private static final String CREATE_SHIFTS_TABLE_STATEMENT =
             "CREATE TABLE `Shifts` (" +
-                    "  `id` int(11) NOT NULL," +
+                    "  `id` INTEGER PRIMARY KEY," +
                     "  `name` text NOT NULL DEFAULT ''," +
                     "  `colour` int(11) NOT NULL," +
                     "  `timeFrom` text NOT NULL," +
-                    "  `timeTo` text NOT NULL," +
-                    "  PRIMARY KEY (`id`)" +
+                    "  `timeTo` text NOT NULL" +
                     ");";
 
 

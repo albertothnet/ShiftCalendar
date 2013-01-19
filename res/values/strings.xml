@@ -20,4 +20,6 @@
 
     <!--Shift Input-->
     <string name="shiftInputTitle">Shift Input</string>
+    <string name="saveShiftInput">Save</string>
+    <string name="cancelShiftInput">Cancel</string>
 </resources>
