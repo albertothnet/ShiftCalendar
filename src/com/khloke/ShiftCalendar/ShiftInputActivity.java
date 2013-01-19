@@ -5,14 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.*;
 import com.khloke.ShiftCalendar.objects.Shift;
 import com.khloke.ShiftCalendar.objects.ShiftCalendar;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -36,8 +34,28 @@ public class ShiftInputActivity extends Activity {
 //        ScrollView scrollView = (ScrollView) findViewById(R.id.shiftInputScroll);
 //        scrollView.setListener
 
+        final ArrayList<View> views = new ArrayList<View>();
         List<Shift> shifts = Shift.loadAll(this.getApplicationContext());
-        ViewGroup layout = (ViewGroup) findViewById(R.id.shiftInputLayout);
+        ListView layout = (ListView) findViewById(R.id.shiftInputScroll);
+        layout.setAdapter(new ArrayAdapter<View>(this, android.R.layout.simple_list_item_1, views) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                return views.get(position);
+            }
+        });
+        layout.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                view.getScrol
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
         ShiftCalendar shiftsFromNow = ShiftCalendar.load(this.getApplicationContext());
         Calendar now = Calendar.getInstance();
 //        for (String date:shiftsFromNow.getShiftMap().keySet()) {
@@ -83,7 +101,8 @@ public class ShiftInputActivity extends Activity {
             }
             linearLayout.addView(radioGroup);
 
-            layout.addView(linearLayout);
+//            layout.addView(linearLayout);
+            views.add(linearLayout);
             now.add(Calendar.DAY_OF_YEAR, 1);
         }
     }

@@ -63,16 +63,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="892253ef-43dc-45e5-96fb-dbeccebbb76c" name="Default" comment="">
-      <change type="DELETED" beforePath="I:\ShiftCalendar\res\drawable-xhdpi\ic_cab_done_holo_light.png" afterPath="" />
-      <change type="DELETED" beforePath="I:\ShiftCalendar\res\drawable-xhdpi\ic_clear_search_api_holo_light.png" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shift Calendar.ipr" afterPath="$PROJECT_DIR$/Shift Calendar.ipr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/drawable-xhdpi/ic_menu_close_clear_cancel.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/drawable-xhdpi/ic_menu_save.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/menu/menu_shift_input.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shift Calendar.iws" afterPath="$PROJECT_DIR$/Shift Calendar.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/objects/Shift.java" afterPath="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/objects/Shift.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/database/ShiftCalendarDbOpenHelper.java" afterPath="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/database/ShiftCalendarDbOpenHelper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ShiftInputActivity.java" afterPath="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ShiftInputActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/menu/menu_add_shift.xml" afterPath="$PROJECT_DIR$/res/menu/menu_add_shift.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/shift_input.xml" afterPath="$PROJECT_DIR$/res/layout/shift_input.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
     </list>
     <ignored path="Shift Calendar.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -101,7 +97,7 @@
     <file path="$USER_HOME$/Downloads/EffectiveNavigation/res/layout/fragment_collection_object.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358410853943" ignored="false" />
     <file path="/index.jsp" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358332549357" ignored="false" />
     <file path="I:/GacPostFilter/gac/web/index.jsp" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358332549798" ignored="false" />
-    <file path="/Dummy.txt" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358582123873" ignored="false" />
+    <file path="/Dummy.txt" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358582134556" ignored="false" />
     <file path="/a.dummy" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358574596478" ignored="false" />
     <file path="/strings.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358578492487" ignored="false" />
     <file path="/HomeActivity.java" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358573922385" ignored="false" />
@@ -110,8 +106,8 @@
     <file path="I:/Android/android-sdk/platforms/android-16/data/res/values-sk/strings.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358562269215" ignored="false" />
     <file path="I:/Android/android-sdk/platforms/android-16/data/res/values-sv/donottranslate-cldr.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358562269215" ignored="false" />
     <file path="/manage_shifts.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358563715975" ignored="false" />
-    <file path="/ShiftInputActivity.java" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358581844268" ignored="false" />
-    <file path="/shift_input.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358581884249" ignored="false" />
+    <file path="/ShiftInputActivity.java" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358583486888" ignored="false" />
+    <file path="/shift_input.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358582184663" ignored="false" />
     <file path="/ShiftCalendar.java" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358573227459" ignored="false" />
     <file path="/ShiftCalendarDbOpenHelper.java" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358574703915" ignored="false" />
     <file path="/menu_shift_input.xml" changelist="892253ef-43dc-45e5-96fb-dbeccebbb76c" time="1358578836944" ignored="false" />
@@ -173,12 +169,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ShiftInputActivity.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ShiftInputActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ShiftInputActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="0" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0">
+            <state line="49" column="31" selection-start="1695" selection-end="1695" vertical-scroll-proportion="0.4865568">
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1021#1027#0" expanded="true" />
+                <element signature="e#3664#3882#0" expanded="true" />
+                <element signature="e#3863#3864#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -250,7 +249,7 @@
       <file leaf-file-name="ManageShiftsActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ManageShiftsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="32" selection-start="2398" selection-end="2398" vertical-scroll-proportion="0.0">
+            <state line="47" column="63" selection-start="1530" selection-end="1566" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -283,13 +282,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="shift_input.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="shift_input.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/res/layout/shift_input.xml">
           <provider editor-type-id="android-designer">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="13" selection-start="479" selection-end="479" vertical-scroll-proportion="0.18085106">
+            <state line="2" column="9" selection-start="49" selection-end="49" vertical-scroll-proportion="-1.36">
               <folding />
             </state>
           </provider>
@@ -327,8 +326,8 @@
         <option value="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/objects/Shift.java" />
         <option value="$PROJECT_DIR$/res/menu/menu_add_shift.xml" />
         <option value="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/database/ShiftCalendarDbOpenHelper.java" />
-        <option value="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ShiftInputActivity.java" />
         <option value="$PROJECT_DIR$/res/layout/shift_input.xml" />
+        <option value="$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ShiftInputActivity.java" />
       </list>
     </option>
   </component>
@@ -795,6 +794,11 @@
       <created>1358245966779</created>
       <updated>1358245966779</updated>
     </task>
+    <task id="LOCAL-00001" summary="-Implemented the shift input activity&#10;-Fixed the db to have the IDs auto increment&#10;-Load 30 days in the shift input activity">
+      <created>1358582160612</created>
+      <updated>1358582160612</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -812,6 +816,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34960273" sideWeight="0.49838188" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32833335" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
@@ -826,7 +831,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Metrics" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -838,8 +842,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
-    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
-    <option name="CHECK_NEW_TODO" value="true" />
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <option name="myTodoPanelSettings">
       <value>
         <are-packages-shown value="false" />
@@ -873,7 +877,7 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
     <option name="LAST_COMMIT_MESSAGE" value="-Implemented the shift input activity&#10;-Fixed the db to have the IDs auto increment&#10;-Load 30 days in the shift input activity" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
-    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -981,29 +985,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/shift_input.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="9" selection-start="49" selection-end="49" vertical-scroll-proportion="-1.36">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ManageShiftsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="32" selection-start="2398" selection-end="2398" vertical-scroll-proportion="0.0">
+        <state line="47" column="63" selection-start="1530" selection-end="1566" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/khloke/ShiftCalendar/ShiftInputActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="0" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0">
+        <state line="49" column="31" selection-start="1695" selection-end="1695" vertical-scroll-proportion="0.4865568">
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1021#1027#0" expanded="true" />
+            <element signature="e#3664#3882#0" expanded="true" />
+            <element signature="e#3863#3864#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/shift_input.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="13" selection-start="479" selection-end="479" vertical-scroll-proportion="0.18085106">
-          <folding />
         </state>
       </provider>
     </entry>
