@@ -8,4 +8,5 @@
         android:verticalSpacing="30dp"
         android:textFilterEnabled="true"
         android:clickable="true"
-        android:focusable="true"/>
+        android:focusable="true"
+        android:background="@android:color/white"/>

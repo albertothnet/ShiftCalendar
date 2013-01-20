@@ -16,9 +16,8 @@ public class ShiftCalendarDbOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ShiftCalendar";
     public static final String CREATE_SHIFTCALENDAR_TABLE_STATEMENT =
             "CREATE  TABLE `ShiftCalendar` (" +
-                    "  `id` INTEGER PRIMARY KEY ," +
-                    "  `shiftId` INT NOT NULL ," +
-                    "  `date` text NOT NULL" +
+                    "  `date` INTEGER PRIMARY KEY ," +
+                    "  `shiftId` INT NOT NULL" +
                     ");";
     private static final String CREATE_SHIFTS_TABLE_STATEMENT =
             "CREATE TABLE `Shifts` (" +

@@ -1,15 +1,13 @@
 package com.khloke.ShiftCalendar.objects;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.khloke.ShiftCalendar.database.ShiftCalendarDbOpenHelper;
+import com.khloke.ShiftCalendar.utils.CalendarUtil;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -20,50 +18,61 @@ import java.util.HashMap;
  */
 public class ShiftCalendar implements DatabaseObject {
 
-    private HashMap<String, Shift> mShiftMap = new HashMap<String, Shift>();
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
     private static final String TABLE_NAME = "ShiftCalendar";
     public static final String DATE_COLUMN = "date";
     public static final String SHIFT_ID_COLUMN = "shiftId";
 
-    public void addShift(String aCalendar, Shift aShift) {
-        mShiftMap.put(aCalendar, aShift);
+    private int mDate;
+    private Shift mShift;
+
+    public ShiftCalendar(int aDate, Shift aShift) {
+        mDate = CalendarUtil.roundMillisToDate(aDate);
+        mShift = aShift;
     }
 
-    public HashMap<String, Shift> getShiftMap() {
-        return mShiftMap;
+    public int getDate() {
+        return mDate;
+    }
+
+    public void setDate(int aDate) {
+        mDate = aDate;
+    }
+
+    public Shift getShift() {
+        return mShift;
+    }
+
+    public void setShift(Shift aShift) {
+        mShift = aShift;
     }
 
     @Override
     public void save(Context aContext) {
-        for (String cal:mShiftMap.keySet()) {
-            ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
-            SQLiteDatabase db = dbOpener.getWritableDatabase();
-            db.insert(TABLE_NAME, null, toContentValues(cal, mShiftMap.get(cal)));
-        }
+        save(aContext, mDate, mShift.getId());
     }
 
-    private ContentValues toContentValues(String aCalendar, Shift aShift) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DATE_COLUMN, aCalendar);
-        contentValues.put(SHIFT_ID_COLUMN, aShift.getId());
-
-        return contentValues;
+    public static void save(Context aContext, int aDate, int aShiftId) {
+        ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
+        SQLiteDatabase db = dbOpener.getWritableDatabase();
+        db.execSQL("INSERT OR REPLACE INTO " + TABLE_NAME + "(date, shiftId) VALUES (" + aDate + ", " + aShiftId + ")");
     }
 
-    public static ShiftCalendar load(Context aContext) {
+    public static HashMap<Integer, ShiftCalendar> load(Context aContext) {
+        HashMap<Integer, ShiftCalendar> shiftCalendars = new  HashMap<Integer, ShiftCalendar>();
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getReadableDatabase();
         Cursor query = db.query(TABLE_NAME, null, DATE_COLUMN + " >=" + DATE_FORMAT.format(Calendar.getInstance().getTime()), new String[0], null, null, DATE_COLUMN);
 
-        ShiftCalendar shiftCalendar = new ShiftCalendar();
         while (query.moveToNext()) {
-                shiftCalendar.addShift(
-                        query.getString(query.getColumnIndex(DATE_COLUMN)),
-                        Shift.load(aContext, query.getInt(query.getColumnIndex(SHIFT_ID_COLUMN))));
+            int date = query.getInt(query.getColumnIndex(DATE_COLUMN));
+            shiftCalendars.put(
+                    date,
+                    new ShiftCalendar(
+                            date,
+                            Shift.load(aContext, query.getInt(query.getColumnIndex(SHIFT_ID_COLUMN)))));
         }
 
-        return shiftCalendar;
+        return shiftCalendars;
     }
 }

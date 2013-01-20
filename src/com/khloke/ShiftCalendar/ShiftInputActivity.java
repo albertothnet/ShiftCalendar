@@ -8,10 +8,12 @@ import android.view.*;
 import android.widget.*;
 import com.khloke.ShiftCalendar.objects.Shift;
 import com.khloke.ShiftCalendar.objects.ShiftCalendar;
+import com.khloke.ShiftCalendar.utils.CalendarUtil;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,6 +23,9 @@ import java.util.List;
  * Time: 1:57 PM
  */
 public class ShiftInputActivity extends Activity {
+
+    HashMap<Integer, Shift> idShiftMap = new HashMap<Integer, Shift>();
+    HashMap<Integer, Integer> idDateMap = new HashMap<Integer, Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +61,9 @@ public class ShiftInputActivity extends Activity {
             }
         });
 
-        ShiftCalendar shiftsFromNow = ShiftCalendar.load(this.getApplicationContext());
+//        ShiftCalendar shiftsFromNow = ShiftCalendar.load(this.getApplicationContext());
         Calendar now = Calendar.getInstance();
+        SecureRandom secureRandom = new SecureRandom();
 //        for (String date:shiftsFromNow.getShiftMap().keySet()) {
         for (int i=0; i<30; i++) {
             LinearLayout linearLayout = new LinearLayout(this);
@@ -65,6 +71,12 @@ public class ShiftInputActivity extends Activity {
 
             TextView dateText = new TextView(this);
             String date = ShiftCalendar.DATE_FORMAT.format(now.getTime());
+            int dateId = secureRandom.nextInt();
+            while (idDateMap.containsKey(dateId)) {
+                dateId = secureRandom.nextInt();
+            }
+            dateText.setId(dateId);
+            idDateMap.put(dateId, CalendarUtil.roundMillisToDate((int) now.getTimeInMillis()));
             dateText.setText(date);
             dateText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
             dateText.setGravity(Gravity.CENTER_VERTICAL);
@@ -81,11 +93,16 @@ public class ShiftInputActivity extends Activity {
                     }
                 }
             });
-            SecureRandom secureRandom = new SecureRandom();
 
             for (Shift shift:shifts) {
                 ToggleButton button = new ToggleButton(this);
-                button.setId(secureRandom.nextInt());
+                int id = secureRandom.nextInt();
+                while (idShiftMap.containsKey(id)) {
+                    id = secureRandom.nextInt();
+                }
+                button.setId(id);
+                idShiftMap.put(id, shift);
+
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -118,6 +135,9 @@ public class ShiftInputActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.saveShiftInput:
+                save();
+
             case android.R.id.home:
             case R.id.cancelShiftInput:
                 Intent home = new Intent(this, HomeActivity.class);
@@ -129,5 +149,25 @@ public class ShiftInputActivity extends Activity {
             default:
                 return false;
         }
+    }
+
+    public boolean save() {
+        ListView list = (ListView) findViewById(R.id.shiftInputScroll);
+        int childCount = list.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            LinearLayout linearLayout = (LinearLayout) list.getChildAt(i);
+            TextView dateText = (TextView) linearLayout.getChildAt(0);
+            RadioGroup radioGroup = (RadioGroup) linearLayout.getChildAt(1);
+            int shiftCount = radioGroup.getChildCount();
+            for (int j = 0; j < shiftCount; j++) {
+                ToggleButton button = (ToggleButton) radioGroup.getChildAt(j);
+                if (button.isChecked()) {
+                    ShiftCalendar.save(this, idDateMap.get(dateText.getId()), idShiftMap.get(button.getId()).getId());
+                }
+            }
+        }
+
+        return true;
     }
 }

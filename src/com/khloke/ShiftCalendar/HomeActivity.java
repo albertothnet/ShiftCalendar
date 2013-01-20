@@ -4,16 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.view.*;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.khloke.ShiftCalendar.objects.ShiftCalendar;
+import com.khloke.ShiftCalendar.utils.CalendarUtil;
+import com.khloke.ShiftCalendar.utils.ColourUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 public class HomeActivity extends FragmentActivity {
 
@@ -25,19 +27,20 @@ public class HomeActivity extends FragmentActivity {
      * allowing navigation between objects in a potentially large collection.
      */
     MonthCollectionPagerAdapter mMonthCollectionPagerAdapter;
-    ArrayList<ArrayList<String>> calendarDays;
-    HashMap<Integer, GridView> currentGridViews = new HashMap<Integer, GridView>();
+    ArrayList<ArrayList<Date>> calendarDays;
+//    HashMap<Integer, GridView> currentGridViews = new HashMap<Integer, GridView>();
+    HashMap<Integer, ShiftCalendar> plottedShifts = new HashMap<Integer, ShiftCalendar>();
 
     /**
      * The {@link android.support.v4.view.ViewPager} that will display the object collection.
      */
     ViewPager mViewPager;
 
-    public static ArrayList<ArrayList<String>> createCalendarList() {
-        ArrayList<ArrayList<String>> fullYearCal = new ArrayList<ArrayList<String>>();
+    public static ArrayList<ArrayList<Date>> createCalendarList() {
+        ArrayList<ArrayList<Date>> fullYearCal = new ArrayList<ArrayList<Date>>();
 
         for (int i = 0; i < 12; i++) {
-            ArrayList<String> month = new ArrayList<String>();
+            ArrayList<Date> month = new ArrayList<Date>();
 
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.MONTH, i);
@@ -49,7 +52,7 @@ public class HomeActivity extends FragmentActivity {
 
             for (int j = 0; j < 42; j++) {
 
-                month.add(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+                month.add(calendar.getTime());
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
             fullYearCal.add(month);
@@ -63,6 +66,7 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.main);
 
         calendarDays = createCalendarList();
+        plottedShifts = ShiftCalendar.load(this);
 
         // Create an adapter that when requested, will return a fragment representing an object in
         // the collection.
@@ -225,13 +229,37 @@ public class HomeActivity extends FragmentActivity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-//            ListView listView = new ListView(HomeActivity.this);
-//            listView.ad
+            Date date = calendarDays.get(mMonth).get(position);
+            LinearLayout linearLayout = new LinearLayout(HomeActivity.this);
+//            linearLayout.setBackgroundColor(16777215);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+//            linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
             TextView textView = new TextView(HomeActivity.this);
-            textView.setText(calendarDays.get(mMonth).get(position));
-//            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            textView.setGravity(Gravity.TOP);
+            textView.setBackgroundColor(16777215);
+            textView.setText(String.valueOf(date.getDate()));
+            linearLayout.addView(textView);
 //            textView.setText(calendarDates.get(position));
-            return textView;
+
+            TextView textView1 = new TextView(HomeActivity.this);
+            textView1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            textView1.setGravity(Gravity.BOTTOM);
+//            textView1.setBackgroundColor(16777215);
+            textView1.setPadding(0, 25, 0, 0);
+            textView1.setTextSize(20);
+            int dayMillis = CalendarUtil.roundMillisToDate((int) date.getTime());
+            ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
+            if (shiftCalendar != null) {
+//                textView1.setTextColor(shiftCalendar.getShift().getColour());
+                String shiftText = "<font color=\"" + ColourUtils.colourIntToHex(shiftCalendar.getShift().getColour()) + "\">" + shiftCalendar.getShift().getName() + "</font>";
+                textView1.setText(Html.fromHtml(shiftText), TextView.BufferType.SPANNABLE);
+            }
+//            textView1.setHeight(70);
+            linearLayout.addView(textView1);
+
+            return linearLayout;
         }
     }
 
