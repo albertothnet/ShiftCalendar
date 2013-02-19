@@ -23,15 +23,15 @@ public class ShiftCalendar implements DatabaseObject {
     public static final String DATE_COLUMN = "date";
     public static final String SHIFT_ID_COLUMN = "shiftId";
 
-    private int mDate;
+    private long mDate;
     private Shift mShift;
 
-    public ShiftCalendar(int aDate, Shift aShift) {
+    public ShiftCalendar(long aDate, Shift aShift) {
         mDate = CalendarUtil.roundMillisToDate(aDate);
         mShift = aShift;
     }
 
-    public int getDate() {
+    public long getDate() {
         return mDate;
     }
 
@@ -52,20 +52,20 @@ public class ShiftCalendar implements DatabaseObject {
         save(aContext, mDate, mShift.getId());
     }
 
-    public static void save(Context aContext, int aDate, int aShiftId) {
+    public static void save(Context aContext, long aDate, int aShiftId) {
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getWritableDatabase();
         db.execSQL("INSERT OR REPLACE INTO " + TABLE_NAME + "(date, shiftId) VALUES (" + aDate + ", " + aShiftId + ")");
     }
 
-    public static HashMap<Integer, ShiftCalendar> load(Context aContext) {
-        HashMap<Integer, ShiftCalendar> shiftCalendars = new  HashMap<Integer, ShiftCalendar>();
+    public static HashMap<Long, ShiftCalendar> load(Context aContext) {
+        HashMap<Long, ShiftCalendar> shiftCalendars = new HashMap<Long, ShiftCalendar>();
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getReadableDatabase();
-        Cursor query = db.query(TABLE_NAME, null, DATE_COLUMN + " >=" + DATE_FORMAT.format(Calendar.getInstance().getTime()), new String[0], null, null, DATE_COLUMN);
+        Cursor query = db.query(TABLE_NAME, null, DATE_COLUMN + " >=" + CalendarUtil.roundMillisToDate(Calendar.getInstance().getTimeInMillis()), new String[0], null, null, DATE_COLUMN);
 
         while (query.moveToNext()) {
-            int date = query.getInt(query.getColumnIndex(DATE_COLUMN));
+            Long date = query.getLong(query.getColumnIndex(DATE_COLUMN));
             shiftCalendars.put(
                     date,
                     new ShiftCalendar(

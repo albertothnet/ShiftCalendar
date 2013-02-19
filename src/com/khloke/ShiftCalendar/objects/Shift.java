@@ -134,9 +134,7 @@ public class Shift implements DatabaseObject {
 
     public boolean isValid() {
         return StringUtils.notEmptyOrNull(mName) &&
-                mColour >= 0 &&
-                StringUtils.notEmptyOrNull(mTimeFrom) &&
-                StringUtils.notEmptyOrNull(mTimeTo);
+                mColour >= 0;
     }
 
     public static Shift load(Context aContext, int aId) {

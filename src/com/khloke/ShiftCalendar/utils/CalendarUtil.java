@@ -10,9 +10,8 @@ public class CalendarUtil {
 
     public static final int MILLIS_IN_DAY = 86400000;
 
-    public static int roundMillisToDate(int aMillis) {
-        Double dateMillis = (double) aMillis;
-        Double dateInMillis = Math.floor(dateMillis/86400000) * MILLIS_IN_DAY;
-        return dateInMillis.intValue();
+    public static long roundMillisToDate(double aMillis) {
+        Double dateInMillis = Math.floor(aMillis /86400000) * MILLIS_IN_DAY;
+        return dateInMillis.longValue();
     }
 }

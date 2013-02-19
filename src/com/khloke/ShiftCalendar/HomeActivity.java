@@ -29,7 +29,7 @@ public class HomeActivity extends FragmentActivity {
     MonthCollectionPagerAdapter mMonthCollectionPagerAdapter;
     ArrayList<ArrayList<Date>> calendarDays;
 //    HashMap<Integer, GridView> currentGridViews = new HashMap<Integer, GridView>();
-    HashMap<Integer, ShiftCalendar> plottedShifts = new HashMap<Integer, ShiftCalendar>();
+    HashMap<Long, ShiftCalendar> plottedShifts = new HashMap<Long, ShiftCalendar>();
 
     /**
      * The {@link android.support.v4.view.ViewPager} that will display the object collection.
@@ -143,7 +143,7 @@ public class HomeActivity extends FragmentActivity {
         @Override
         public int getCount() {
             // For this contrived example, we have a 100-object collection.
-            return 12;
+            return currentFragments.size();
         }
 
         @Override
@@ -249,7 +249,7 @@ public class HomeActivity extends FragmentActivity {
 //            textView1.setBackgroundColor(16777215);
             textView1.setPadding(0, 25, 0, 0);
             textView1.setTextSize(20);
-            int dayMillis = CalendarUtil.roundMillisToDate((int) date.getTime());
+            long dayMillis = CalendarUtil.roundMillisToDate(date.getTime());
             ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
             if (shiftCalendar != null) {
 //                textView1.setTextColor(shiftCalendar.getShift().getColour());

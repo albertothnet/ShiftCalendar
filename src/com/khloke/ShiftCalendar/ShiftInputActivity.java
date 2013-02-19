@@ -25,7 +25,7 @@ import java.util.List;
 public class ShiftInputActivity extends Activity {
 
     HashMap<Integer, Shift> idShiftMap = new HashMap<Integer, Shift>();
-    HashMap<Integer, Integer> idDateMap = new HashMap<Integer, Integer>();
+    HashMap<Integer, Long> idDateMap = new HashMap<Integer, Long>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,7 @@ public class ShiftInputActivity extends Activity {
                 dateId = secureRandom.nextInt();
             }
             dateText.setId(dateId);
-            idDateMap.put(dateId, CalendarUtil.roundMillisToDate((int) now.getTimeInMillis()));
+            idDateMap.put(dateId, CalendarUtil.roundMillisToDate(now.getTimeInMillis()));
             dateText.setText(date);
             dateText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
             dateText.setGravity(Gravity.CENTER_VERTICAL);
