@@ -36,7 +36,7 @@ public class ShiftCalendar implements DatabaseObject {
     }
 
     public void setDate(int aDate) {
-        mDate = aDate;
+        mDate = CalendarUtil.roundMillisToDate(aDate);
     }
 
     public Shift getShift() {

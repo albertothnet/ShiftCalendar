@@ -10,16 +10,16 @@
     <string name="manageShiftsTitle">Manage Shifts</string>
     <string name="menuAdd">Add</string>
 
-    <!--Add Shift-->
-    <string name="addShiftTitle">New Shift</string>
-    <string name="shiftNameHint">Name</string>
-    <string name="shiftTimeLabel">Time</string>
-    <string name="shiftTimeFromHint">From</string>
-    <string name="shiftTimeDelimiter">~</string>
-    <string name="shiftTimeToHint">To</string>
-
     <!--Shift Input-->
     <string name="shiftInputTitle">Shift Input</string>
     <string name="saveShiftInput">Save</string>
     <string name="cancelShiftInput">Cancel</string>
+
+    <!--New Shift -->
+    <string name="new_shift_title">Add New Shift</string>
+    <string name="new_shift_label_name">Name</string>
+    <string name="new_shift_label_colour">Colour</string>
+    <string name="new_shift_label_time">Time</string>
+    <string name="new_shift_button_save">Save</string>
+    <string name="new_shift_button_cancel">Cancel</string>
 </resources>

@@ -15,44 +15,40 @@ import com.khloke.ShiftCalendar.utils.CalendarUtil;
 import com.khloke.ShiftCalendar.utils.ColourUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class HomeActivity extends FragmentActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing
-     * each object in a collection. We use a {@link android.support.v4.app.FragmentStatePagerAdapter}
-     * derivative, which will destroy and re-create fragments as needed, saving and restoring their
-     * state in the process. This is important to conserve memory and is a best practice when
-     * allowing navigation between objects in a potentially large collection.
-     */
     MonthCollectionPagerAdapter mMonthCollectionPagerAdapter;
-    ArrayList<ArrayList<Date>> calendarDays;
+    ArrayList<ArrayList<Calendar>> calendarDays;
 //    HashMap<Integer, GridView> currentGridViews = new HashMap<Integer, GridView>();
     HashMap<Long, ShiftCalendar> plottedShifts = new HashMap<Long, ShiftCalendar>();
+    HashMap<Integer, Fragment> currentFragments = new HashMap<Integer, Fragment>();
 
-    /**
-     * The {@link android.support.v4.view.ViewPager} that will display the object collection.
-     */
     ViewPager mViewPager;
 
-    public static ArrayList<ArrayList<Date>> createCalendarList() {
-        ArrayList<ArrayList<Date>> fullYearCal = new ArrayList<ArrayList<Date>>();
+    public static ArrayList<ArrayList<Calendar>> createCalendarList() {
+        ArrayList<ArrayList<Calendar>> fullYearCal = new ArrayList<ArrayList<Calendar>>();
 
         for (int i = 0; i < 12; i++) {
-            ArrayList<Date> month = new ArrayList<Date>();
+            ArrayList<Calendar> month = new ArrayList<Calendar>();
 
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.MONTH, i);
             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+
             while (calendar.get(Calendar.MONTH) != i || calendar.get(Calendar.DAY_OF_MONTH) != calendar.getActualMinimum(Calendar.DAY_OF_MONTH)) {
                 //Do nothing
             }
+
             calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMinimum(Calendar.DAY_OF_WEEK));
 
             for (int j = 0; j < 42; j++) {
 
-                month.add(calendar.getTime());
+                month.add((Calendar) calendar.clone());
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
             fullYearCal.add(month);
@@ -68,14 +64,8 @@ public class HomeActivity extends FragmentActivity {
         calendarDays = createCalendarList();
         plottedShifts = ShiftCalendar.load(this);
 
-        // Create an adapter that when requested, will return a fragment representing an object in
-        // the collection.
-        //
-        // ViewPager and its adapters use support library fragments, so we must use
-        // getSupportFragmentManager.
         mMonthCollectionPagerAdapter = new MonthCollectionPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager, attaching the adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mMonthCollectionPagerAdapter);
         mViewPager.setCurrentItem(Calendar.getInstance().get(Calendar.MONTH));
@@ -85,21 +75,13 @@ public class HomeActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // This is called when the Home (Up) button is pressed in the action bar.
-                // Create a simple intent that starts the hierarchical parent activity and
-                // use NavUtils in the Support Package to ensure proper handling of Up.
                 Intent upIntent = new Intent(this, HomeActivity.class);
                 if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-                    // This activity is not part of the application's task, so create a new task
-                    // with a synthesized back stack.
                     TaskStackBuilder.create(this)
-                            // If there are ancestor activities, they should be added here.
                             .addNextIntent(upIntent)
                             .startActivities();
                     finish();
                 } else {
-                    // This activity is part of the application's task, so simply
-                    // navigate up to the hierarchical parent activity.
                     NavUtils.navigateUpTo(this, upIntent);
                 }
                 return true;
@@ -107,16 +89,16 @@ public class HomeActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    HashMap<Integer, Fragment> currentFragments = new HashMap<Integer, Fragment>();
 
-    /**
-     * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment
-     * representing an object in the collection.
-     */
     public class MonthCollectionPagerAdapter extends FragmentStatePagerAdapter {
 
         public MonthCollectionPagerAdapter(FragmentManager fm) {
             super(fm);
+
+            currentFragments.clear();
+            for (int i = 0; i < 12; i++) {
+                currentFragments.put(i, createMonthFragment(i));
+            }
         }
 
         @Override
@@ -125,16 +107,9 @@ public class HomeActivity extends FragmentActivity {
             if (currentFragments.containsKey(i)) {
                 return currentFragments.get(i);
             } else {
-                Fragment fragment = createCalendarFragment(i);
+                Fragment fragment = createMonthFragment(i);
 
                 currentFragments.put(i, fragment);
-
-                if (i-1 >= Calendar.JANUARY) {
-                    currentFragments.put(i-1, createCalendarFragment(i-1));
-                }
-                if (i+1 <= Calendar.DECEMBER) {
-                    currentFragments.put(i+1, createCalendarFragment(i+1));
-                }
 
                 return fragment;
             }
@@ -142,8 +117,7 @@ public class HomeActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            // For this contrived example, we have a 100-object collection.
-            return currentFragments.size();
+            return 12;
         }
 
         @Override
@@ -155,55 +129,32 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
-    private Fragment createCalendarFragment(int i) {
-        Fragment fragment = new CalendarFragment();
+    private Fragment createMonthFragment(int i) {
+        Fragment fragment = new MonthFragment();
         Bundle args = new Bundle();
-        args.putInt(CalendarFragment.MONTH, i);
+
+        args.putInt(MonthFragment.MONTH, i);
         fragment.setArguments(args);
         return fragment;
     }
 
+    public class MonthFragment extends Fragment {
 
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
-    public class CalendarFragment extends Fragment {
-
-        public CalendarFragment() {
+        public MonthFragment() {
         }
 
         public static final String MONTH = "month";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             Bundle args = getArguments();
             Integer month = (Integer) args.get(MONTH);
 
-//            if (currentGridViews.containsKey(month)) {
-//                return currentGridViews.get(month);
-//            } else {
-                GridView gridView = (GridView) inflater.inflate(R.layout.fragment_calendar, container, false);
-    //            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-    //                    Integer.toString(args.getInt(ARG_OBJECT)));
-                gridView.setAdapter(new CalendarAdapter(month));
-//                currentGridViews.put(month, gridView);
-//
-//                if (month - 1 >= 0) {
-//                    GridView gridView1 = (GridView) inflater.inflate(R.layout.fragment_calendar, container, false);
-//                    gridView1.setAdapter(new CalendarAdapter(month-1));
-//                    currentGridViews.put(month-1, gridView1);
-//                }
-//
-//                if (month + 1 <= Calendar.DECEMBER) {
-//                    GridView gridView1 = (GridView) inflater.inflate(R.layout.fragment_calendar, container, false);
-//                    gridView1.setAdapter(new CalendarAdapter(month+1));
-//                    currentGridViews.put(month+1, gridView1);
-//                }
+            GridView gridView = (GridView) inflater.inflate(R.layout.fragment_calendar, container, false);
+            gridView.setAdapter(new CalendarAdapter(month));
 
-                return gridView;
-
-//            }
+            return gridView;
         }
     }
 
@@ -229,7 +180,7 @@ public class HomeActivity extends FragmentActivity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            Date date = calendarDays.get(mMonth).get(position);
+            Calendar date = calendarDays.get(mMonth).get(position);
             LinearLayout linearLayout = new LinearLayout(HomeActivity.this);
 //            linearLayout.setBackgroundColor(16777215);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -239,7 +190,7 @@ public class HomeActivity extends FragmentActivity {
             textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
             textView.setGravity(Gravity.TOP);
             textView.setBackgroundColor(16777215);
-            textView.setText(String.valueOf(date.getDate()));
+            textView.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
             linearLayout.addView(textView);
 //            textView.setText(calendarDates.get(position));
 
@@ -249,7 +200,7 @@ public class HomeActivity extends FragmentActivity {
 //            textView1.setBackgroundColor(16777215);
             textView1.setPadding(0, 25, 0, 0);
             textView1.setTextSize(20);
-            long dayMillis = CalendarUtil.roundMillisToDate(date.getTime());
+            long dayMillis = CalendarUtil.roundMillisToDate(date.getTimeInMillis());
             ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
             if (shiftCalendar != null) {
 //                textView1.setTextColor(shiftCalendar.getShift().getColour());

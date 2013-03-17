@@ -1,18 +1,15 @@
 package com.khloke.ShiftCalendar;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.khloke.ShiftCalendar.database.ShiftCalendarDbOpenHelper;
 import com.khloke.ShiftCalendar.objects.Shift;
 import com.khloke.ShiftCalendar.utils.ColourUtils;
 
@@ -24,7 +21,7 @@ import java.util.List;
  * Date: 18/01/13
  * Time: 9:42 PM
  */
-public class ManageShiftsActivity extends Activity {
+public class ManageShiftsActivity extends FragmentActivity {
 
     List<Shift> mShifts;
 
@@ -34,23 +31,17 @@ public class ManageShiftsActivity extends Activity {
         setTitle("Manage Shifts");
         setContentView(R.layout.manage_shifts);
 
-        // Set up action bar.
         final ActionBar actionBar = getActionBar();
-
-        // Specify that the Home button should show an "Up" caret, indicating that touching the
-        // button will take the user one step up in the application's hierarchy.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // TODO: Load up all current shifts
         mShifts = Shift.loadAll(this.getApplicationContext());
 
         ListView shiftListView = (ListView) findViewById(R.id.shiftListView);
-        shiftListView.setAdapter(new ArrayAdapter<Shift>(this, android.R.layout.simple_list_item_1, mShifts) {
+        ArrayAdapter<Shift> shiftArrayAdapter = new ArrayAdapter<Shift>(this, android.R.layout.simple_list_item_1, mShifts) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
-//                TextView nameView = (TextView) getLayoutInflater().inflate(R.id.shiftTextView, parent);
-//                TextView nameView = (TextView) findViewById(R.id.shiftTextView);
                 TextView nameView = new TextView(ManageShiftsActivity.this);
 
                 Shift item = getItem(position);
@@ -61,16 +52,18 @@ public class ManageShiftsActivity extends Activity {
 
                 return nameView;
             }
-        });
+        };
+        shiftListView.setAdapter(shiftArrayAdapter);
+
         shiftListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent addShift = new Intent(ManageShiftsActivity.this, AddShiftActivity.class);
                 Shift shift = mShifts.get(position);
                 Bundle shiftDetails = shift.toBundle();
-                addShift.putExtras(shiftDetails);
 
-                startActivity(addShift);
+                NewShiftDialogFragment newShiftDialogFragment = new NewShiftDialogFragment();
+                newShiftDialogFragment.setArguments(shiftDetails);
+                newShiftDialogFragment.show(getSupportFragmentManager(), "addShift");
             }
         });
 
@@ -94,8 +87,7 @@ public class ManageShiftsActivity extends Activity {
                 return true;
 
             case R.id.addShiftAction:
-                Intent addShift = new Intent(this, AddShiftActivity.class);
-                startActivity(addShift);
+                new NewShiftDialogFragment().show(getSupportFragmentManager(), "addShift");
                 return true;
 
             default:

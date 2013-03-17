@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+        <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="@string/new_shift_label_name"
+                android:id="@+id/labelName"
+                android:layout_gravity="center_vertical|right"
+                android:textSize="18dp"
+                android:paddingRight="10dp"
+                android:gravity="left"/>
+
+        <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextName"
+                android:layout_gravity="left|center_vertical"
+                android:inputType="text"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+        <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="@string/new_shift_label_colour"
+                android:id="@+id/labelAddress"
+                android:layout_gravity="center_vertical|right"
+                android:textSize="18dp"
+                android:gravity="left"
+                android:paddingRight="10dp"/>
+
+        <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerColour"
+                android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+        <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="@string/new_shift_label_time"
+                android:id="@+id/labelPort"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="18dp"
+                android:gravity="left"
+                android:paddingRight="10dp"/>
+
+        <EditText
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextTimeFrom"
+                android:layout_gravity="left|center_vertical"
+                android:inputType="text"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="~"
+                android:id="@+id/textView"
+                android:gravity="center_vertical"
+                android:textSize="18dp"
+                android:focusableInTouchMode="false"/>
+
+        <EditText
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextTimeTo"
+                android:layout_gravity="left|center_vertical"
+                android:inputType="text"/>
+
+    </LinearLayout>
+
+</LinearLayout>
