@@ -187,31 +187,25 @@ public class HomeActivity extends FragmentActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             Calendar date = calendarDays.get(mMonth).get(position);
             LinearLayout linearLayout = new LinearLayout(HomeActivity.this);
-//            linearLayout.setBackgroundColor(16777215);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-//            linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             TextView textView = new TextView(HomeActivity.this);
             textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
             textView.setGravity(Gravity.TOP);
-            textView.setBackgroundColor(16777215);
             textView.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
             linearLayout.addView(textView);
-//            textView.setText(calendarDates.get(position));
 
             TextView textView1 = new TextView(HomeActivity.this);
             textView1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
             textView1.setGravity(Gravity.BOTTOM);
-//            textView1.setBackgroundColor(16777215);
             textView1.setPadding(0, 25, 0, 0);
-            textView1.setTextSize(20);
+            textView1.setTextSize(15);
             long dayMillis = CalendarUtil.roundMillisToDate(date.getTimeInMillis());
             ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
             if (shiftCalendar != null) {
                 textView1.setTextColor(shiftCalendar.getShift().getColour());
                 textView1.setText(shiftCalendar.getShift().getName(), TextView.BufferType.SPANNABLE);
             }
-//            textView1.setHeight(70);
             linearLayout.addView(textView1);
 
             return linearLayout;

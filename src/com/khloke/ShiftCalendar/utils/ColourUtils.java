@@ -33,6 +33,16 @@ public class ColourUtils {
         return ShiftColours.valueOf(aColour.toUpperCase()).getColourCode();
     }
 
+    public static int getColourOrdinal(int aColour) {
+        for (ShiftColours colour:ShiftColours.values()) {
+            if (aColour == colour.getColourCode()){
+                return colour.ordinal();
+            }
+        }
+
+        return -1;
+    }
+
     public static String colourIntToHex(int aColour) {
         return "#" + Integer.toHexString(aColour);
     }

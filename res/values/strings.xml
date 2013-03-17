@@ -22,4 +22,8 @@
     <string name="new_shift_label_time">Time</string>
     <string name="new_shift_button_save">Save</string>
     <string name="new_shift_button_cancel">Cancel</string>
+
+    <string-array name="dialog_shift_actions">
+        <item>Delete</item>
+    </string-array>
 </resources>

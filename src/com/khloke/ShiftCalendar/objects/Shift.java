@@ -104,7 +104,11 @@ public class Shift implements DatabaseObject {
         SQLiteDatabase db = dbOpener.getWritableDatabase();
         ContentValues contentValues = toContentValues();
         contentValues.remove(ID_COLUMN);
-        db.insert(TABLE_NAME, null, contentValues);
+        if (getId() < 0) {
+            mId = Long.valueOf(db.insert(TABLE_NAME, null, contentValues)).intValue();
+        } else {
+            mId = Long.valueOf(db.update(TABLE_NAME, contentValues, ID_COLUMN + "=" + getId(), null)).intValue();
+        }
     }
 
     public ContentValues toContentValues() {
@@ -172,5 +176,18 @@ public class Shift implements DatabaseObject {
         }
 
         return shifts;
+    }
+
+    public void delete(Context aContext) {
+        ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
+        SQLiteDatabase db = dbOpener.getWritableDatabase();
+
+        db.delete(TABLE_NAME, ID_COLUMN + "=" + getId(), null);
+        db.delete(ShiftCalendar.TABLE_NAME, ShiftCalendar.SHIFT_ID_COLUMN + "=" + getId(), null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Shift && mId == ((Shift) o).getId();
     }
 }

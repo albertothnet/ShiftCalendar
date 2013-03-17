@@ -1,8 +1,12 @@
 package com.khloke.ShiftCalendar;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.view.*;
@@ -23,6 +27,8 @@ import java.util.List;
 public class ManageShiftsActivity extends FragmentActivity {
 
     List<Shift> mShifts;
+    ArrayAdapter<Shift> mShiftArrayAdapter;
+    ListView mShiftListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,8 +42,8 @@ public class ManageShiftsActivity extends FragmentActivity {
         // TODO: Load up all current shifts
         mShifts = Shift.loadAll(this.getApplicationContext());
 
-        ListView shiftListView = (ListView) findViewById(R.id.shiftListView);
-        ArrayAdapter<Shift> shiftArrayAdapter = new ArrayAdapter<Shift>(this, android.R.layout.simple_list_item_1, mShifts) {
+        mShiftListView = (ListView) findViewById(R.id.shiftListView);
+        mShiftArrayAdapter = new ArrayAdapter<Shift>(this, android.R.layout.simple_list_item_1, mShifts) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -54,9 +60,9 @@ public class ManageShiftsActivity extends FragmentActivity {
                 return nameView;
             }
         };
-        shiftListView.setAdapter(shiftArrayAdapter);
+        mShiftListView.setAdapter(mShiftArrayAdapter);
 
-        shiftListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mShiftListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Shift shift = mShifts.get(position);
@@ -65,6 +71,41 @@ public class ManageShiftsActivity extends FragmentActivity {
                 NewShiftDialogFragment newShiftDialogFragment = new NewShiftDialogFragment();
                 newShiftDialogFragment.setArguments(shiftDetails);
                 newShiftDialogFragment.show(getSupportFragmentManager(), "addShift");
+            }
+        });
+
+        mShiftListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final Shift shift = mShifts.get(position);
+                DialogFragment dialogFragment = new DialogFragment() {
+                    @Override
+                    public Dialog onCreateDialog(Bundle savedInstanceState) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setItems(R.array.dialog_shift_actions, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        shift.delete(getActivity());
+                                        mShifts.remove(shift);
+                                        break;
+                                }
+                            }
+                        });
+
+                        return builder.create();
+                    }
+
+                    @Override
+                    public void onDetach() {
+                        super.onDetach();
+                        ((ManageShiftsActivity) getActivity()).refresh();
+                    }
+                };
+
+                dialogFragment.show(getSupportFragmentManager(), "shiftActions");
+                return true;
             }
         });
 
@@ -94,5 +135,13 @@ public class ManageShiftsActivity extends FragmentActivity {
             default:
                 return false;
         }
+    }
+
+    public List<Shift> getShifts() {
+        return mShifts;
+    }
+
+    public void refresh() {
+        mShiftArrayAdapter.notifyDataSetChanged();
     }
 }

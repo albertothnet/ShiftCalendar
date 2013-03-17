@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class ShiftCalendar implements DatabaseObject {
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private static final String TABLE_NAME = "ShiftCalendar";
+    public static final String TABLE_NAME = "ShiftCalendar";
     public static final String DATE_COLUMN = "date";
     public static final String SHIFT_ID_COLUMN = "shiftId";
 

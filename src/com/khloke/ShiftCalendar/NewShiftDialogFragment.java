@@ -51,8 +51,7 @@ public class NewShiftDialogFragment extends DialogFragment {
 
             editTextName.setText(shiftBundle.getString(Shift.NAME_COLUMN));
 
-            //TODO: Set to the right colour
-            spinnerColour.setSelection(1);
+            spinnerColour.setSelection(ColourUtils.getColourOrdinal(shiftBundle.getInt(Shift.COLOUR_COLUMN)) - 1);
 
             editTextTimeFrom.setText(shiftBundle.getString(Shift.TIME_FROM_COLUMN));
             editTextTimeTo.setText(shiftBundle.getString(Shift.TIME_TO_COLUMN));
@@ -63,22 +62,29 @@ public class NewShiftDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.new_shift_button_save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        String toastMessage;
 
-                        if (shiftBundle == null) {
+                        if (mShift == null) {
                             mShift = new Shift(
                                     editTextName.getText().toString(),
                                     ColourUtils.getColourInt((String) spinnerColour.getSelectedItem()),
                                     editTextTimeFrom.getText().toString(),
                                     editTextTimeTo.getText().toString());
+                            ((ManageShiftsActivity)getActivity()).getShifts().add(mShift);
+                            toastMessage = "New Shift Saved";
                         } else {
+                            ((ManageShiftsActivity)getActivity()).getShifts().remove(mShift);
                             mShift.setName(editTextName.getText().toString());
                             mShift.setColour(ColourUtils.getColourInt((String) spinnerColour.getSelectedItem()));
                             mShift.setTimeFrom(editTextTimeFrom.getText().toString());
                             mShift.setTimeTo(editTextTimeTo.getText().toString());
+                            ((ManageShiftsActivity)getActivity()).getShifts().add(mShift);
+                            toastMessage = "Shift Saved";
                         }
 
                         mShift.save(getActivity());
-                        Toast.makeText(getActivity(), "New Shift Saved", Toast.LENGTH_SHORT).show();
+                        ((ManageShiftsActivity)getActivity()).refresh();
+                        Toast.makeText(getActivity(), toastMessage, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.new_shift_button_cancel, new DialogInterface.OnClickListener() {
@@ -113,12 +119,6 @@ public class NewShiftDialogFragment extends DialogFragment {
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        getActivity().recreate();
     }
 
     class TimeEditTextOnFocusListener implements View.OnFocusChangeListener {
