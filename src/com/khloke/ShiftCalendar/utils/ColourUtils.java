@@ -1,6 +1,6 @@
 package com.khloke.ShiftCalendar.utils;
 
-import java.util.HashMap;
+import android.graphics.Color;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,14 +10,27 @@ import java.util.HashMap;
  */
 public class ColourUtils {
 
-    public static int getColourInt(String aColour) {
-        HashMap<String, Integer> colourMap = new HashMap<String, Integer>();
-        colourMap.put("White", 16777215);
-        colourMap.put("Blue", 255);
-        colourMap.put("Red", 16711680);
-        colourMap.put("Green", 65280);
+    public static enum ShiftColours {
+        WHITE(Color.WHITE),
+        BLUE(Color.BLUE),
+        RED(Color.RED),
+        GREEN(Color.GREEN),
+        MAGENTA(Color.MAGENTA),
+        YELLOW(Color.YELLOW);
 
-        return colourMap.get(aColour);
+        private int colourCode;
+
+        private ShiftColours(int aColourCode) {
+            colourCode = aColourCode;
+        }
+
+        public int getColourCode() {
+            return colourCode;
+        }
+    }
+
+    public static int getColourInt(String aColour) {
+        return ShiftColours.valueOf(aColour.toUpperCase()).getColourCode();
     }
 
     public static String colourIntToHex(int aColour) {

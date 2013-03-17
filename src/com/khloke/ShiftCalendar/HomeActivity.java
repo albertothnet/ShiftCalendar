@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.view.*;
 import android.widget.*;
 import com.khloke.ShiftCalendar.objects.ShiftCalendar;
 import com.khloke.ShiftCalendar.utils.CalendarUtil;
-import com.khloke.ShiftCalendar.utils.ColourUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -210,9 +208,8 @@ public class HomeActivity extends FragmentActivity {
             long dayMillis = CalendarUtil.roundMillisToDate(date.getTimeInMillis());
             ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
             if (shiftCalendar != null) {
-//                textView1.setTextColor(shiftCalendar.getShift().getColour());
-                String shiftText = "<font color=\"" + ColourUtils.colourIntToHex(shiftCalendar.getShift().getColour()) + "\">" + shiftCalendar.getShift().getName() + "</font>";
-                textView1.setText(Html.fromHtml(shiftText), TextView.BufferType.SPANNABLE);
+                textView1.setTextColor(shiftCalendar.getShift().getColour());
+                textView1.setText(shiftCalendar.getShift().getName(), TextView.BufferType.SPANNABLE);
             }
 //            textView1.setHeight(70);
             linearLayout.addView(textView1);

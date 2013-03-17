@@ -4,14 +4,13 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.Html;
+import android.util.TypedValue;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.khloke.ShiftCalendar.objects.Shift;
-import com.khloke.ShiftCalendar.utils.ColourUtils;
 
 import java.util.List;
 
@@ -45,9 +44,11 @@ public class ManageShiftsActivity extends FragmentActivity {
                 TextView nameView = new TextView(ManageShiftsActivity.this);
 
                 Shift item = getItem(position);
-                String text = "<font color='" + ColourUtils.colourIntToHex(item.getColour()) + "'>" + item.getName() + "</font> " + item.getTimeFrom() + "~" + item.getTimeTo();
-                nameView.setHeight(70);
-                nameView.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
+                nameView.setText(item.getName() + " " + item.getTimeFrom() + "~" + item.getTimeTo());
+                nameView.setTextColor(item.getColour());
+                nameView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22);
+                nameView.setHeight(80);
+                nameView.setPadding(30, 0, 30, 0);
                 nameView.setGravity(Gravity.CENTER_VERTICAL);
 
                 return nameView;
