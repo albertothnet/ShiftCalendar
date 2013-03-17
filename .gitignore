@@ -7,6 +7,9 @@
 # Android Generated Resources
 out/
 gen/
+*.apk
+*.class
+proguard_logs/
 
 # Mac Crap
 .DS_Store
