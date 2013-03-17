@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class ShiftInputActivity extends Activity {
 
+    public static final String ARG_STARTING_DATE = "startDate";
     HashMap<Integer, Shift> idShiftMap = new HashMap<Integer, Shift>();
     HashMap<Integer, Long> idDateMap = new HashMap<Integer, Long>();
 
@@ -36,8 +37,13 @@ public class ShiftInputActivity extends Activity {
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-//        ScrollView scrollView = (ScrollView) findViewById(R.id.shiftInputScroll);
-//        scrollView.setListener
+        Calendar now = Calendar.getInstance();
+
+        Bundle arguments = getIntent().getExtras();
+        if (arguments != null && arguments.containsKey(ARG_STARTING_DATE)) {
+            Calendar startingDate = (Calendar) arguments.get(ARG_STARTING_DATE);
+            now = (Calendar) startingDate.clone();
+        }
 
         final ArrayList<View> views = new ArrayList<View>();
         List<Shift> shifts = Shift.loadAll(this.getApplicationContext());
@@ -51,7 +57,6 @@ public class ShiftInputActivity extends Activity {
         layout.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                view.getScrol
                 //To change body of implemented methods use File | Settings | File Templates.
             }
 
@@ -61,10 +66,9 @@ public class ShiftInputActivity extends Activity {
             }
         });
 
-//        ShiftCalendar shiftsFromNow = ShiftCalendar.load(this.getApplicationContext());
-        Calendar now = Calendar.getInstance();
+        HashMap<Long, ShiftCalendar> allShiftsFromDate = ShiftCalendar.loadFromDate(getApplicationContext(), now);
+
         SecureRandom secureRandom = new SecureRandom();
-//        for (String date:shiftsFromNow.getShiftMap().keySet()) {
         for (int i=0; i<30; i++) {
             LinearLayout linearLayout = new LinearLayout(this);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -113,6 +117,13 @@ public class ShiftInputActivity extends Activity {
                 button.setTextOn(shift.getName());
                 button.setTextOff(shift.getName());
 //                button.setTextColor(shift.getColour());
+
+                if (allShiftsFromDate.containsKey(CalendarUtil.roundMillisToDate(now.getTimeInMillis()))) {
+                    ShiftCalendar shiftCal = allShiftsFromDate.get(CalendarUtil.roundMillisToDate(now.getTimeInMillis()));
+                    if (shiftCal.getShift().getId() == shift.getId()) {
+                        button.setChecked(true);
+                    }
+                }
 
                 radioGroup.addView(button);
             }

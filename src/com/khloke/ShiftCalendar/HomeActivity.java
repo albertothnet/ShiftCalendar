@@ -6,10 +6,7 @@ import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.*;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.khloke.ShiftCalendar.objects.ShiftCalendar;
 import com.khloke.ShiftCalendar.utils.CalendarUtil;
 import com.khloke.ShiftCalendar.utils.ColourUtils;
@@ -37,10 +34,12 @@ public class HomeActivity extends FragmentActivity {
             ArrayList<Calendar> month = new ArrayList<Calendar>();
 
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.MONTH, i);
+            //Set the calendar to i - 6 months ago
+            calendar.add(Calendar.MONTH, (i-6));
+
             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 
-            while (calendar.get(Calendar.MONTH) != i || calendar.get(Calendar.DAY_OF_MONTH) != calendar.getActualMinimum(Calendar.DAY_OF_MONTH)) {
+            while (calendar.get(Calendar.DAY_OF_MONTH) != calendar.getActualMinimum(Calendar.DAY_OF_MONTH)) {
                 //Do nothing
             }
 
@@ -68,7 +67,7 @@ public class HomeActivity extends FragmentActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mMonthCollectionPagerAdapter);
-        mViewPager.setCurrentItem(Calendar.getInstance().get(Calendar.MONTH));
+        mViewPager.setCurrentItem(6);
     }
 
     @Override
@@ -123,9 +122,9 @@ public class HomeActivity extends FragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            calendar.set(Calendar.MONTH, position);
+            calendar.add(Calendar.MONTH, position - 6);
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
-            return dateFormat.format(calendar.getTime());
+            return dateFormat.format(calendar.getTime()) + " " + calendar.get(Calendar.YEAR);
         }
     }
 
@@ -149,10 +148,19 @@ public class HomeActivity extends FragmentActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             Bundle args = getArguments();
-            Integer month = (Integer) args.get(MONTH);
+            final Integer month = (Integer) args.get(MONTH);
 
             GridView gridView = (GridView) inflater.inflate(R.layout.fragment_calendar, container, false);
             gridView.setAdapter(new CalendarAdapter(month));
+            gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent shiftInput = new Intent(getApplicationContext(), ShiftInputActivity.class);
+                    shiftInput.putExtra(ShiftInputActivity.ARG_STARTING_DATE, calendarDays.get(month).get(position));
+                    startActivity(shiftInput);
+                    return true;
+                }
+            });
 
             return gridView;
         }
@@ -172,7 +180,6 @@ public class HomeActivity extends FragmentActivity {
 
         public Object getItem(int position) {
             return calendarDays.get(position);
-//            return calendarDates.get(position);
         }
 
         public long getItemId(int position) {

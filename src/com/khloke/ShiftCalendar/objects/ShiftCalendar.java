@@ -59,10 +59,15 @@ public class ShiftCalendar implements DatabaseObject {
     }
 
     public static HashMap<Long, ShiftCalendar> load(Context aContext) {
+        Calendar today = Calendar.getInstance();
+        return loadFromDate(aContext, today);
+    }
+
+    public static HashMap<Long, ShiftCalendar> loadFromDate(Context aContext, Calendar aDate) {
         HashMap<Long, ShiftCalendar> shiftCalendars = new HashMap<Long, ShiftCalendar>();
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getReadableDatabase();
-        Cursor query = db.query(TABLE_NAME, null, DATE_COLUMN + " >=" + CalendarUtil.roundMillisToDate(Calendar.getInstance().getTimeInMillis()), new String[0], null, null, DATE_COLUMN);
+        Cursor query = db.query(TABLE_NAME, null, DATE_COLUMN + " >=" + CalendarUtil.roundMillisToDate(aDate.getTimeInMillis()), new String[0], null, null, DATE_COLUMN);
 
         while (query.moveToNext()) {
             Long date = query.getLong(query.getColumnIndex(DATE_COLUMN));
