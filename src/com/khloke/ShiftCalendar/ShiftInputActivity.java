@@ -113,9 +113,10 @@ public class ShiftInputActivity extends Activity {
                 button.setGravity(Gravity.CENTER_HORIZONTAL);
 //                button.setBackgroundColor(Color.YELLOW);
 
+                button.setTag(R.id.shift_calendar_tag, allShiftsFromDate.get(CalendarUtil.roundMillisToDate(now.getTimeInMillis())));
+                button.setTag(R.id.shift_input_radio_tag, shift);
 
                 if (allShiftsFromDate.containsKey(CalendarUtil.roundMillisToDate(now.getTimeInMillis()))) {
-                    button.setTag(R.id.shift_calendar_tag, new ShiftCalendar(CalendarUtil.roundMillisToDate(now.getTimeInMillis()), shift, false));
 
                     ShiftCalendar shiftCal = allShiftsFromDate.get(CalendarUtil.roundMillisToDate(now.getTimeInMillis()));
                     if (shiftCal.getShift().getId() == shift.getId()) {
@@ -185,6 +186,8 @@ public class ShiftInputActivity extends Activity {
                 RadioButton button = (RadioButton) radioGroup.getChildAt(j);
                 if (button.isChecked()) {
                     ShiftCalendar shiftCalendar = (ShiftCalendar) button.getTag(R.id.shift_calendar_tag);
+                    Shift shift = (Shift) button.getTag(R.id.shift_input_radio_tag);
+                    shiftCalendar.setShift(shift);
                     shiftCalendar.save(this);
                 }
             }

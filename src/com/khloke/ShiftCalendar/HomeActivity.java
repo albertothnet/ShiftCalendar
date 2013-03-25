@@ -59,7 +59,7 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.main);
 
         calendarDays = createCalendarList();
-        plottedShifts = ShiftCalendar.load(this);
+        plottedShifts = ShiftCalendar.loadFromDate(this, calendarDays.get(0).get(0));
 
         mMonthCollectionPagerAdapter = new MonthCollectionPagerAdapter(getSupportFragmentManager());
 

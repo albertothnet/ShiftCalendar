@@ -2,9 +2,13 @@
 <resources>
     <string-array name="colours_array">
         <item>Blue</item>
+        <item>Dark Blue</item>
         <item>Red</item>
-        <item>Green</item>
+        <item>Dark Green</item>
         <item>Magenta</item>
-        <item>Yellow</item>
+        <item>Dark Yellow</item>
+        <item>Orange</item>
+        <item>Brown</item>
+        <item>Dark Grey</item>
     </string-array>
 </resources>

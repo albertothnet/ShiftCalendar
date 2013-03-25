@@ -13,10 +13,14 @@ public class ColourUtils {
     public static enum ShiftColours {
         WHITE(Color.WHITE),
         BLUE(Color.BLUE),
+        DARK_BLUE(Color.rgb(46, 49, 146)),
         RED(Color.RED),
-        GREEN(Color.GREEN),
+        DARK_GREEN(Color.rgb(0, 166, 81)),
         MAGENTA(Color.MAGENTA),
-        YELLOW(Color.YELLOW);
+        DARK_YELLOW(Color.rgb(238, 226, 0)),
+        ORANGE(Color.rgb(247, 148, 29)),
+        BROWN(Color.rgb(140, 98, 57)),
+        DARK_GREY(Color.DKGRAY);
 
         private int colourCode;
 
@@ -30,7 +34,7 @@ public class ColourUtils {
     }
 
     public static int getColourInt(String aColour) {
-        return ShiftColours.valueOf(aColour.toUpperCase()).getColourCode();
+        return ShiftColours.valueOf(aColour.toUpperCase().replace(" ", "_")).getColourCode();
     }
 
     public static int getColourOrdinal(int aColour) {
