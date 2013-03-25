@@ -188,7 +188,9 @@ public class ShiftInputActivity extends Activity {
                     ShiftCalendar shiftCalendar = (ShiftCalendar) button.getTag(R.id.shift_calendar_tag);
                     Shift shift = (Shift) button.getTag(R.id.shift_input_radio_tag);
                     shiftCalendar.setShift(shift);
-                    shiftCalendar.save(this);
+                    if (shiftCalendar.isDirty()) {
+                        shiftCalendar.save(this);
+                    }
                 }
             }
         }

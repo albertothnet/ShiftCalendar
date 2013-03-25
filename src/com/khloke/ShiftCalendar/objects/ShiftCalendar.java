@@ -26,18 +26,22 @@ public class ShiftCalendar implements DatabaseObject {
 
     private long mDate;
     private Shift mShift;
-    private boolean mNew;
+    private Shift mOriginal;
 
     public ShiftCalendar(long aDate, Shift aShift) {
         mDate = CalendarUtil.roundMillisToDate(aDate);
         mShift = aShift;
-        mNew = true;
+        mOriginal = null;
     }
 
     public ShiftCalendar(long aDate, Shift aShift, boolean aNew) {
         mDate = aDate;
         mShift = aShift;
-        mNew = aNew;
+        if (!aNew) {
+            mOriginal = aShift;
+        } else {
+            mOriginal = null;
+        }
     }
 
     public long getDate() {
@@ -64,15 +68,22 @@ public class ShiftCalendar implements DatabaseObject {
         return contentValues;
     }
 
+    public boolean isDirty() {
+        return !mShift.equals(mOriginal);
+    }
+
     @Override
     public void save(Context aContext) {
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getWritableDatabase();
-        if (mNew) {
+        if (mOriginal == null) {
             db.insert(TABLE_NAME, null, toContentValues());
-            mNew = false;
+            mOriginal = mShift;
         } else {
-            db.update(TABLE_NAME, toContentValues(), DATE_COLUMN + "=" + String.valueOf(mDate), null);
+            if (!mOriginal.equals(mShift)) {
+                db.update(TABLE_NAME, toContentValues(), DATE_COLUMN + "=" + String.valueOf(mDate), null);
+                mOriginal = mShift;
+            }
         }
     }
 
