@@ -1,5 +1,6 @@
 package com.khloke.ShiftCalendar.objects;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,10 +26,18 @@ public class ShiftCalendar implements DatabaseObject {
 
     private long mDate;
     private Shift mShift;
+    private boolean mNew;
 
     public ShiftCalendar(long aDate, Shift aShift) {
         mDate = CalendarUtil.roundMillisToDate(aDate);
         mShift = aShift;
+        mNew = true;
+    }
+
+    public ShiftCalendar(long aDate, Shift aShift, boolean aNew) {
+        mDate = aDate;
+        mShift = aShift;
+        mNew = aNew;
     }
 
     public long getDate() {
@@ -47,15 +56,24 @@ public class ShiftCalendar implements DatabaseObject {
         mShift = aShift;
     }
 
-    @Override
-    public void save(Context aContext) {
-        save(aContext, mDate, mShift.getId());
+    public ContentValues toContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DATE_COLUMN, mDate);
+        contentValues.put(SHIFT_ID_COLUMN, mShift.getId());
+
+        return contentValues;
     }
 
-    public static void save(Context aContext, long aDate, int aShiftId) {
+    @Override
+    public void save(Context aContext) {
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getWritableDatabase();
-        db.execSQL("INSERT OR REPLACE INTO " + TABLE_NAME + "(date, shiftId) VALUES (" + aDate + ", " + aShiftId + ")");
+        if (mNew) {
+            db.insert(TABLE_NAME, null, toContentValues());
+            mNew = false;
+        } else {
+            db.update(TABLE_NAME, toContentValues(), DATE_COLUMN + "=" + String.valueOf(mDate), null);
+        }
     }
 
     public static HashMap<Long, ShiftCalendar> load(Context aContext) {
@@ -75,7 +93,8 @@ public class ShiftCalendar implements DatabaseObject {
                     date,
                     new ShiftCalendar(
                             date,
-                            Shift.load(aContext, query.getInt(query.getColumnIndex(SHIFT_ID_COLUMN)))));
+                            Shift.load(aContext, query.getInt(query.getColumnIndex(SHIFT_ID_COLUMN))),
+                            false));
         }
 
         return shiftCalendars;

@@ -122,7 +122,7 @@ public class HomeActivity extends FragmentActivity {
             Calendar calendar = Calendar.getInstance(Locale.getDefault());
             calendar.add(Calendar.MONTH, position - 6);
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
-            return dateFormat.format(calendar.getTime()) + " " + calendar.get(Calendar.YEAR);
+            return dateFormat.format(calendar.getTime());
         }
     }
 
@@ -187,26 +187,26 @@ public class HomeActivity extends FragmentActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             Calendar date = calendarDays.get(mMonth).get(position);
             LinearLayout linearLayout = new LinearLayout(HomeActivity.this);
-            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-            TextView textView = new TextView(HomeActivity.this);
-            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            textView.setGravity(Gravity.TOP);
-            textView.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
-            linearLayout.addView(textView);
+            TextView dayOfMonthText = new TextView(HomeActivity.this);
+            dayOfMonthText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            dayOfMonthText.setGravity(Gravity.TOP);
+            dayOfMonthText.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
+            linearLayout.addView(dayOfMonthText);
 
-            TextView textView1 = new TextView(HomeActivity.this);
-            textView1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            textView1.setGravity(Gravity.BOTTOM);
-            textView1.setPadding(0, 25, 0, 0);
-            textView1.setTextSize(15);
+            TextView shiftText = new TextView(HomeActivity.this);
+            shiftText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            shiftText.setGravity(Gravity.RIGHT);
+            shiftText.setPadding(0, 25, 0, 0);
+            shiftText.setTextSize(15);
             long dayMillis = CalendarUtil.roundMillisToDate(date.getTimeInMillis());
-            ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
-            if (shiftCalendar != null) {
-                textView1.setTextColor(shiftCalendar.getShift().getColour());
-                textView1.setText(shiftCalendar.getShift().getName(), TextView.BufferType.SPANNABLE);
+            if (plottedShifts.containsKey(dayMillis)) {
+                ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
+                shiftText.setTextColor(shiftCalendar.getShift().getColour());
+                shiftText.setText(shiftCalendar.getShift().getName(), TextView.BufferType.SPANNABLE);
             }
-            linearLayout.addView(textView1);
+            linearLayout.addView(shiftText);
 
             return linearLayout;
         }
