@@ -109,6 +109,8 @@ public class Shift implements DatabaseObject {
         } else {
             mId = Long.valueOf(db.update(TABLE_NAME, contentValues, ID_COLUMN + "=" + getId(), null)).intValue();
         }
+        db.close();
+        dbOpener.close();
     }
 
     public ContentValues toContentValues() {
@@ -146,16 +148,25 @@ public class Shift implements DatabaseObject {
         SQLiteDatabase db = dbOpener.getReadableDatabase();
         Cursor query = db.query(TABLE_NAME, null, "id="+String.valueOf(aId), new String[0], null, null, null);
 
-        if (query.moveToNext()) {
-            return new Shift(
-                    query.getInt(query.getColumnIndex(ID_COLUMN)),
-                    query.getString(query.getColumnIndex(NAME_COLUMN)),
-                    query.getInt(query.getColumnIndex(COLOUR_COLUMN)),
-                    query.getString(query.getColumnIndex(TIME_FROM_COLUMN)),
-                    query.getString(query.getColumnIndex(TIME_TO_COLUMN))
-            );
-        } else {
-            return null;
+        try {
+            if (query.moveToNext()) {
+                Shift shift = new Shift(
+                        query.getInt(query.getColumnIndex(ID_COLUMN)),
+                        query.getString(query.getColumnIndex(NAME_COLUMN)),
+                        query.getInt(query.getColumnIndex(COLOUR_COLUMN)),
+                        query.getString(query.getColumnIndex(TIME_FROM_COLUMN)),
+                        query.getString(query.getColumnIndex(TIME_TO_COLUMN))
+                );
+                db.close();
+                dbOpener.close();
+                return shift;
+            } else {
+                db.close();
+                dbOpener.close();
+                return null;
+            }
+        } finally {
+            query.close();
         }
     }
 
@@ -165,15 +176,21 @@ public class Shift implements DatabaseObject {
         Cursor query = db.query(Shift.TABLE_NAME, null, "", new String[0], "", "", "");
         ArrayList<Shift> shifts = new ArrayList<Shift>();
 
-        while (query.moveToNext()) {
-            shifts.add(
-                    new Shift(
-                            query.getInt(query.getColumnIndex(ID_COLUMN)),
-                            query.getString(query.getColumnIndex(NAME_COLUMN)),
-                            query.getInt(query.getColumnIndex(COLOUR_COLUMN)),
-                            query.getString(query.getColumnIndex(TIME_FROM_COLUMN)),
-                            query.getString(query.getColumnIndex(TIME_TO_COLUMN))));
+        try {
+            while (query.moveToNext()) {
+                shifts.add(
+                        new Shift(
+                                query.getInt(query.getColumnIndex(ID_COLUMN)),
+                                query.getString(query.getColumnIndex(NAME_COLUMN)),
+                                query.getInt(query.getColumnIndex(COLOUR_COLUMN)),
+                                query.getString(query.getColumnIndex(TIME_FROM_COLUMN)),
+                                query.getString(query.getColumnIndex(TIME_TO_COLUMN))));
+            }
+        } finally {
+            query.close();
         }
+        db.close();
+        dbOpener.close();
 
         return shifts;
     }
@@ -184,6 +201,8 @@ public class Shift implements DatabaseObject {
 
         db.delete(TABLE_NAME, ID_COLUMN + "=" + getId(), null);
         db.delete(ShiftCalendar.TABLE_NAME, ShiftCalendar.SHIFT_ID_COLUMN + "=" + getId(), null);
+        db.close();
+        dbOpener.close();
     }
 
     @Override

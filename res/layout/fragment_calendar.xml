@@ -1,12 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView
+<TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/gridView"
-        android:numColumns="7"
-        android:verticalSpacing="30dp"
-        android:textFilterEnabled="true"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@android:color/white"/>
+        android:id="@+id/tableLayout"
+        android:stretchColumns="*"
+        android:orientation="horizontal">
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="0dp"
+            android:showDividers="none"
+            android:layout_margin="0dp"
+            android:layout_gravity="left">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sunday"
+                android:gravity="center"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/monday"
+                android:gravity="center"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tuesday"
+                android:gravity="center"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wednesday"
+                android:gravity="center"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thursday"
+                android:gravity="center"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/friday"
+                android:gravity="center"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/saturday"
+                android:gravity="center"/>
+    </TableRow>
+</TableLayout>

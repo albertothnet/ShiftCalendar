@@ -85,6 +85,8 @@ public class ShiftCalendar implements DatabaseObject {
                 mOriginal = mShift;
             }
         }
+        db.close();
+        dbOpener.close();
     }
 
     public static HashMap<Long, ShiftCalendar> load(Context aContext) {
@@ -98,15 +100,21 @@ public class ShiftCalendar implements DatabaseObject {
         SQLiteDatabase db = dbOpener.getReadableDatabase();
         Cursor query = db.query(TABLE_NAME, null, DATE_COLUMN + " >=" + CalendarUtil.roundMillisToDate(aDate.getTimeInMillis()), new String[0], null, null, DATE_COLUMN);
 
-        while (query.moveToNext()) {
-            Long date = query.getLong(query.getColumnIndex(DATE_COLUMN));
-            shiftCalendars.put(
-                    date,
-                    new ShiftCalendar(
-                            date,
-                            Shift.load(aContext, query.getInt(query.getColumnIndex(SHIFT_ID_COLUMN))),
-                            false));
+        try {
+            while (query.moveToNext()) {
+                Long date = query.getLong(query.getColumnIndex(DATE_COLUMN));
+                shiftCalendars.put(
+                        date,
+                        new ShiftCalendar(
+                                date,
+                                Shift.load(aContext, query.getInt(query.getColumnIndex(SHIFT_ID_COLUMN))),
+                                false));
+            }
+        } finally {
+            query.close();
         }
+        db.close();
+        dbOpener.close();
 
         return shiftCalendars;
     }

@@ -40,6 +40,7 @@ public class ShiftCalendarDbOpenHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_SHIFTCALENDAR_TABLE_STATEMENT);
         db.setTransactionSuccessful();
         db.endTransaction();
+        db.close();
     }
 
     @Override

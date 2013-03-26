@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.view.*;
-import android.widget.*;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import com.khloke.ShiftCalendar.objects.ShiftCalendar;
 import com.khloke.ShiftCalendar.utils.CalendarUtil;
 
@@ -43,7 +46,7 @@ public class HomeActivity extends FragmentActivity {
 
             calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMinimum(Calendar.DAY_OF_WEEK));
 
-            for (int j = 0; j < 42; j++) {
+            for (int j = 0; j < 49; j++) {
 
                 month.add((Calendar) calendar.clone());
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
@@ -147,68 +150,64 @@ public class HomeActivity extends FragmentActivity {
                                  Bundle savedInstanceState) {
             Bundle args = getArguments();
             final Integer month = (Integer) args.get(MONTH);
+            long todayLong = CalendarUtil.roundMillisToDate(Calendar.getInstance().getTimeInMillis());
+            int thisMonth = calendarDays.get(month).get(15).get(Calendar.MONTH);
 
-            GridView gridView = (GridView) inflater.inflate(R.layout.fragment_calendar, container, false);
-            gridView.setAdapter(new CalendarAdapter(month));
-            gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent shiftInput = new Intent(getApplicationContext(), ShiftInputActivity.class);
-                    shiftInput.putExtra(ShiftInputActivity.ARG_STARTING_DATE, calendarDays.get(month).get(position));
-                    startActivity(shiftInput);
-                    return true;
+            TableLayout tableLayout = (TableLayout) inflater.inflate(R.layout.fragment_calendar, container, false);
+            TableRow tableRow = null;
+            for (int i = 0; i < 49; i++) {
+                if (i % 7 == 0) {
+                    if (i > 0) {
+                        tableLayout.addView(tableRow);
+                    }
+                    tableRow = new TableRow(HomeActivity.this);
+                    tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 }
-            });
 
-            return gridView;
-        }
-    }
+                Calendar date = calendarDays.get(month).get(i);
+                LinearLayout linearLayout = new LinearLayout(HomeActivity.this);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-    public class CalendarAdapter extends BaseAdapter {
+                TextView dayOfMonthText = new TextView(HomeActivity.this);
+                dayOfMonthText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                dayOfMonthText.setGravity(Gravity.TOP);
+                dayOfMonthText.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
+                linearLayout.addView(dayOfMonthText);
 
-        private final int mMonth;
-
-        public CalendarAdapter(int aMonth) {
-            mMonth = aMonth;
-        }
-
-        public int getCount() {
-            return 42;
-        }
-
-        public Object getItem(int position) {
-            return calendarDays.get(position);
-        }
-
-        public long getItemId(int position) {
-            return position;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            Calendar date = calendarDays.get(mMonth).get(position);
-            LinearLayout linearLayout = new LinearLayout(HomeActivity.this);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-            TextView dayOfMonthText = new TextView(HomeActivity.this);
-            dayOfMonthText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            dayOfMonthText.setGravity(Gravity.TOP);
-            dayOfMonthText.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
-            linearLayout.addView(dayOfMonthText);
-
-            TextView shiftText = new TextView(HomeActivity.this);
-            shiftText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            shiftText.setGravity(Gravity.RIGHT);
-            shiftText.setPadding(0, 25, 0, 0);
-            shiftText.setTextSize(15);
-            long dayMillis = CalendarUtil.roundMillisToDate(date.getTimeInMillis());
-            if (plottedShifts.containsKey(dayMillis)) {
-                ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
-                shiftText.setTextColor(shiftCalendar.getShift().getColour());
-                shiftText.setText(shiftCalendar.getShift().getName(), TextView.BufferType.SPANNABLE);
+                TextView shiftText = new TextView(HomeActivity.this);
+                shiftText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                shiftText.setGravity(Gravity.CENTER_HORIZONTAL);
+                shiftText.setPadding(0, 25, 0, 0);
+                shiftText.setTextSize(15);
+                long dayMillis = CalendarUtil.roundMillisToDate(date.getTimeInMillis());
+                if (plottedShifts.containsKey(dayMillis)) {
+                    ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
+                    shiftText.setTextColor(shiftCalendar.getShift().getColour());
+                    shiftText.setText(shiftCalendar.getShift().getName(), TextView.BufferType.SPANNABLE);
+                }
+                linearLayout.setPadding(5, 5, 5, 5);
+                if (dayMillis == todayLong) {
+                    linearLayout.setBackgroundResource(R.drawable.calendar_cell_today);
+                } else if (date.get(Calendar.MONTH) == thisMonth) {
+                    linearLayout.setBackgroundResource(R.drawable.calendar_cell_dim);
+                } else {
+                    linearLayout.setBackgroundResource(R.drawable.calendar_cell_dark);
+                }
+                linearLayout.addView(shiftText);
+                linearLayout.setTag(R.id.table_cell_position_tag, i);
+                linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Intent shiftInput = new Intent(getApplicationContext(), ShiftInputActivity.class);
+                        shiftInput.putExtra(ShiftInputActivity.ARG_STARTING_DATE, calendarDays.get(month).get((Integer) v.getTag(R.id.table_cell_position_tag)));
+                        startActivity(shiftInput);
+                        return true;
+                    }
+                });
+                tableRow.addView(linearLayout);
             }
-            linearLayout.addView(shiftText);
 
-            return linearLayout;
+            return tableLayout;
         }
     }
 
