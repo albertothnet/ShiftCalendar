@@ -27,6 +27,7 @@ import java.util.List;
 public class ShiftInputActivity extends Activity {
 
     public static final String ARG_STARTING_DATE = "startDate";
+    private ArrayList<RadioButton> mAllButtons = new ArrayList<RadioButton>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +135,7 @@ public class ShiftInputActivity extends Activity {
                     button.setTag(R.id.shift_calendar_tag, new ShiftCalendar(CalendarUtil.roundMillisToDate(now.getTimeInMillis()), shift));
                 }
 
+                mAllButtons.add(button);
                 radioGroup.addView(button);
             }
 
@@ -175,22 +177,13 @@ public class ShiftInputActivity extends Activity {
     }
 
     public boolean save() {
-        ListView list = (ListView) findViewById(R.id.shiftInputScroll);
-        int childCount = list.getChildCount();
-
-        for (int i = 0; i < childCount; i++) {
-            LinearLayout linearLayout = (LinearLayout) list.getChildAt(i);
-            RadioGroup radioGroup = (RadioGroup) linearLayout.getChildAt(1);
-            int shiftCount = radioGroup.getChildCount();
-            for (int j = 0; j < shiftCount; j++) {
-                RadioButton button = (RadioButton) radioGroup.getChildAt(j);
-                if (button.isChecked()) {
-                    ShiftCalendar shiftCalendar = (ShiftCalendar) button.getTag(R.id.shift_calendar_tag);
-                    Shift shift = (Shift) button.getTag(R.id.shift_input_radio_tag);
-                    shiftCalendar.setShift(shift);
-                    if (shiftCalendar.isDirty()) {
-                        shiftCalendar.save(this);
-                    }
+        for (RadioButton button:mAllButtons) {
+            if (button.isChecked()) {
+                ShiftCalendar shiftCalendar = (ShiftCalendar) button.getTag(R.id.shift_calendar_tag);
+                Shift shift = (Shift) button.getTag(R.id.shift_input_radio_tag);
+                shiftCalendar.setShift(shift);
+                if (shiftCalendar.isDirty()) {
+                    shiftCalendar.save(this);
                 }
             }
         }

@@ -18,6 +18,8 @@ import com.khloke.ShiftCalendar.objects.Shift;
 
 import java.util.List;
 
+import static com.khloke.ShiftCalendar.utils.StringUtils.notEmptyOrNull;
+
 /**
  * Created by IntelliJ IDEA.
  * User: khloke
@@ -50,7 +52,12 @@ public class ManageShiftsActivity extends FragmentActivity {
                 TextView nameView = new TextView(ManageShiftsActivity.this);
 
                 Shift item = getItem(position);
-                nameView.setText(item.getName() + " " + item.getTimeFrom() + "~" + item.getTimeTo());
+
+                StringBuilder titleBuilder = new StringBuilder(item.getName());
+                if (notEmptyOrNull(item.getTimeFrom()) && notEmptyOrNull(item.getTimeTo())) {
+                    titleBuilder.append(" ").append(item.getTimeFrom()).append("~").append(item.getTimeTo());
+                }
+                nameView.setText(titleBuilder.toString());
                 nameView.setTextColor(item.getColour());
                 nameView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22);
                 nameView.setHeight(80);
