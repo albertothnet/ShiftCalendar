@@ -8,14 +8,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.TypedValue;
 import android.view.*;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import com.khloke.ShiftCalendar.objects.Shift;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.khloke.ShiftCalendar.utils.StringUtils.notEmptyOrNull;
@@ -29,7 +31,7 @@ import static com.khloke.ShiftCalendar.utils.StringUtils.notEmptyOrNull;
 public class ManageShiftsActivity extends FragmentActivity {
 
     List<Shift> mShifts;
-    ArrayAdapter<Shift> mShiftArrayAdapter;
+    SimpleAdapter mShiftArrayAdapter;
     ListView mShiftListView;
 
     @Override
@@ -45,13 +47,21 @@ public class ManageShiftsActivity extends FragmentActivity {
         mShifts = Shift.loadAll(this.getApplicationContext());
 
         mShiftListView = (ListView) findViewById(R.id.shiftListView);
-        mShiftArrayAdapter = new ArrayAdapter<Shift>(this, android.R.layout.simple_list_item_1, mShifts) {
+
+        List<HashMap<String, Shift>> shiftTexts = new ArrayList<HashMap<String, Shift>>();
+        for (Shift shift:mShifts) {
+            HashMap<String, Shift> stringShiftHashMap = new HashMap<String, Shift>();
+            stringShiftHashMap.put("shift", shift);
+            shiftTexts.add(stringShiftHashMap);
+        }
+
+        mShiftArrayAdapter = new SimpleAdapter(this, shiftTexts, R.layout.shift_item, new String[]{"shift"}, new int[] {R.id.shiftNameView}) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
+                View layout = super.getView(position, convertView, parent);
+                TextView nameView = (TextView) layout.findViewById(R.id.shiftNameView);
 
-                TextView nameView = new TextView(ManageShiftsActivity.this);
-
-                Shift item = getItem(position);
+                Shift item = ((HashMap<String, Shift>)getItem(position)).get("shift");
 
                 StringBuilder titleBuilder = new StringBuilder(item.getName());
                 if (notEmptyOrNull(item.getTimeFrom()) && notEmptyOrNull(item.getTimeTo())) {
@@ -59,12 +69,8 @@ public class ManageShiftsActivity extends FragmentActivity {
                 }
                 nameView.setText(titleBuilder.toString());
                 nameView.setTextColor(item.getColour());
-                nameView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22);
-                nameView.setHeight(80);
-                nameView.setPadding(30, 0, 30, 0);
-                nameView.setGravity(Gravity.CENTER_VERTICAL);
 
-                return nameView;
+                return layout;
             }
         };
         mShiftListView.setAdapter(mShiftArrayAdapter);
@@ -89,6 +95,7 @@ public class ManageShiftsActivity extends FragmentActivity {
                     @Override
                     public Dialog onCreateDialog(Bundle savedInstanceState) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Actions");
                         builder.setItems(R.array.dialog_shift_actions, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -149,6 +156,7 @@ public class ManageShiftsActivity extends FragmentActivity {
     }
 
     public void refresh() {
+        Collections.sort(mShifts, new Shift.ShiftComparator());
         mShiftArrayAdapter.notifyDataSetChanged();
     }
 }

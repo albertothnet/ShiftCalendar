@@ -17,6 +17,7 @@
 
     <!--New Shift -->
     <string name="new_shift_title">Add New Shift</string>
+    <string name="edit_shift_title">Edit Shift</string>
     <string name="new_shift_label_name">Name</string>
     <string name="new_shift_label_colour">Colour</string>
     <string name="new_shift_label_time">Time</string>

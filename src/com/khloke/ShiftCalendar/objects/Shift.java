@@ -9,6 +9,7 @@ import com.khloke.ShiftCalendar.database.ShiftCalendarDbOpenHelper;
 import com.khloke.ShiftCalendar.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -26,13 +27,15 @@ public class Shift implements DatabaseObject {
     public static final String COLOUR_COLUMN = "colour";
     public static final String TIME_FROM_COLUMN = "timeFrom";
     public static final String TIME_TO_COLUMN = "timeTo";
+    public static final String SORT_ORDER_COLUMN = "sortOrder";
 
     public static final String[] COLUMNS = {
             ID_COLUMN,
             NAME_COLUMN,
             COLOUR_COLUMN,
             TIME_FROM_COLUMN,
-            TIME_TO_COLUMN
+            TIME_TO_COLUMN,
+            SORT_ORDER_COLUMN
     };
 
     private int mId = -1;
@@ -40,6 +43,7 @@ public class Shift implements DatabaseObject {
     private int mColour;
     private String mTimeFrom;
     private String mTimeTo;
+    private int mSortOrder = -1;
 
     public Shift() {
     }
@@ -51,12 +55,13 @@ public class Shift implements DatabaseObject {
         mTimeTo = aTimeTo;
     }
 
-    private Shift(int aId, String aName, int aColour, String aTimeFrom, String aTimeTo) {
+    private Shift(int aId, String aName, int aColour, String aTimeFrom, String aTimeTo, int aSortOrder) {
         mId = aId;
         mName = aName;
         mColour = aColour;
         mTimeFrom = aTimeFrom;
         mTimeTo = aTimeTo;
+        mSortOrder = aSortOrder;
     }
 
     public int getId() {
@@ -99,7 +104,18 @@ public class Shift implements DatabaseObject {
         mTimeTo = aTimeTo;
     }
 
+    public int getSortOrder() {
+        return mSortOrder;
+    }
+
+    public void setSortOrder(int aSortOrder) {
+        mSortOrder = aSortOrder;
+    }
+
     public void save(Context aContext) {
+        if (mSortOrder < 0) {
+            mSortOrder = loadAll(aContext).size();
+        }
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getWritableDatabase();
         ContentValues contentValues = toContentValues();
@@ -120,6 +136,7 @@ public class Shift implements DatabaseObject {
         contentValues.put(COLOUR_COLUMN, mColour);
         contentValues.put(TIME_FROM_COLUMN, mTimeFrom);
         contentValues.put(TIME_TO_COLUMN, mTimeTo);
+        contentValues.put(SORT_ORDER_COLUMN, mSortOrder);
         return contentValues;
     }
     
@@ -130,12 +147,19 @@ public class Shift implements DatabaseObject {
         shiftBundle.putInt(COLOUR_COLUMN, getColour());
         shiftBundle.putString(TIME_FROM_COLUMN, getTimeFrom());
         shiftBundle.putString(TIME_TO_COLUMN, getTimeTo());
+        shiftBundle.putInt(SORT_ORDER_COLUMN, getSortOrder());
 
         return shiftBundle;
     }
 
     public static Shift fromBundle(Bundle aBundle) {
-        return new Shift(aBundle.getInt(ID_COLUMN), aBundle.getString(NAME_COLUMN), aBundle.getInt(COLOUR_COLUMN), aBundle.getString(TIME_FROM_COLUMN), aBundle.getString(TIME_TO_COLUMN));
+        return new Shift(
+                aBundle.getInt(ID_COLUMN),
+                aBundle.getString(NAME_COLUMN),
+                aBundle.getInt(COLOUR_COLUMN),
+                aBundle.getString(TIME_FROM_COLUMN),
+                aBundle.getString(TIME_TO_COLUMN),
+                aBundle.getInt(SORT_ORDER_COLUMN));
     }
 
     public boolean isValid() {
@@ -155,7 +179,8 @@ public class Shift implements DatabaseObject {
                         query.getString(query.getColumnIndex(NAME_COLUMN)),
                         query.getInt(query.getColumnIndex(COLOUR_COLUMN)),
                         query.getString(query.getColumnIndex(TIME_FROM_COLUMN)),
-                        query.getString(query.getColumnIndex(TIME_TO_COLUMN))
+                        query.getString(query.getColumnIndex(TIME_TO_COLUMN)),
+                        query.getInt(query.getColumnIndex(SORT_ORDER_COLUMN))
                 );
                 db.close();
                 dbOpener.close();
@@ -173,7 +198,7 @@ public class Shift implements DatabaseObject {
     public static List<Shift> loadAll(Context aContext) {
         ShiftCalendarDbOpenHelper dbOpener = new ShiftCalendarDbOpenHelper(aContext);
         SQLiteDatabase db = dbOpener.getReadableDatabase();
-        Cursor query = db.query(Shift.TABLE_NAME, null, "", new String[0], "", "", "");
+        Cursor query = db.query(Shift.TABLE_NAME, null, "", new String[0], "", "", SORT_ORDER_COLUMN);
         ArrayList<Shift> shifts = new ArrayList<Shift>();
 
         try {
@@ -184,13 +209,12 @@ public class Shift implements DatabaseObject {
                                 query.getString(query.getColumnIndex(NAME_COLUMN)),
                                 query.getInt(query.getColumnIndex(COLOUR_COLUMN)),
                                 query.getString(query.getColumnIndex(TIME_FROM_COLUMN)),
-                                query.getString(query.getColumnIndex(TIME_TO_COLUMN))));
+                                query.getString(query.getColumnIndex(TIME_TO_COLUMN)),
+                                query.getInt(query.getColumnIndex(SORT_ORDER_COLUMN))));
             }
         } finally {
             query.close();
         }
-        db.close();
-        dbOpener.close();
 
         return shifts;
     }
@@ -208,5 +232,23 @@ public class Shift implements DatabaseObject {
     @Override
     public boolean equals(Object o) {
         return o instanceof Shift && mId == ((Shift) o).getId();
+    }
+
+    @Override
+    public String toString() {
+        return mName;
+    }
+
+    public static class ShiftComparator implements Comparator<Shift> {
+        @Override
+        public int compare(Shift lhs, Shift rhs) {
+            if (lhs.getSortOrder() > rhs.getSortOrder()) {
+                return 1;
+            } else if (lhs.getSortOrder() < rhs.getSortOrder()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 }

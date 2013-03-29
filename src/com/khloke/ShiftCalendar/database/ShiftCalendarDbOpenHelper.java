@@ -25,7 +25,8 @@ public class ShiftCalendarDbOpenHelper extends SQLiteOpenHelper {
                     "  `name` text NOT NULL DEFAULT ''," +
                     "  `colour` int(11) NOT NULL," +
                     "  `timeFrom` text," +
-                    "  `timeTo` text" +
+                    "  `timeTo` text," +
+                    "  `sortOrder` int(11)" +
                     ");";
 
 

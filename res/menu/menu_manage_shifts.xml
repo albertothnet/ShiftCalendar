@@ -6,5 +6,5 @@
             android:title="@string/menuAdd"
             android:showAsAction="ifRoom"
             android:orderInCategory="0"
-            android:icon="@drawable/ic_menu_add"/>
+            android:icon="@android:drawable/ic_menu_add"/>
 </menu>

@@ -89,6 +89,7 @@ public class ShiftInputActivity extends Activity {
         ArrayList<Integer> checkIds = new ArrayList<Integer>();
         for (int i=0; i<30; i++) {
             LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setMinimumHeight(50);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
             TextView dateText = new TextView(this);

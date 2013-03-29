@@ -6,12 +6,12 @@
             android:title="@string/menuAdd"
             android:showAsAction="ifRoom"
             android:orderInCategory="0"
-            android:icon="@drawable/ic_menu_close_clear_cancel"/>
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"/>
     <item
             android:id="@+id/addShiftDone"
             android:title="@string/menuAdd"
             android:showAsAction="ifRoom"
             android:orderInCategory="0"
-            android:icon="@drawable/ic_menu_save"/>
+            android:icon="@android:drawable/ic_menu_save"/>
 
 </menu>

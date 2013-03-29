@@ -49,16 +49,18 @@ public class NewShiftDialogFragment extends DialogFragment {
 
             mShift = Shift.fromBundle(shiftBundle);
 
+            builder.setTitle(R.string.edit_shift_title);
             editTextName.setText(shiftBundle.getString(Shift.NAME_COLUMN));
 
             spinnerColour.setSelection(ColourUtils.getColourOrdinal(shiftBundle.getInt(Shift.COLOUR_COLUMN)) - 1);
 
             editTextTimeFrom.setText(shiftBundle.getString(Shift.TIME_FROM_COLUMN));
             editTextTimeTo.setText(shiftBundle.getString(Shift.TIME_TO_COLUMN));
+        } else {
+            builder.setTitle(R.string.new_shift_title);
         }
 
         builder
-                .setTitle(R.string.new_shift_title)
                 .setPositiveButton(R.string.new_shift_button_save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
