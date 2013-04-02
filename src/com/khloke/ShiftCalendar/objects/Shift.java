@@ -4,10 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import com.khloke.ShiftCalendar.database.ShiftCalendarDbOpenHelper;
 import com.khloke.ShiftCalendar.utils.StringUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  * Date: 19/01/13
  * Time: 2:50 AM
  */
-public class Shift implements DatabaseObject {
+public class Shift implements DatabaseObject, Serializable {
 
     public static final String TABLE_NAME = "Shifts";
 
@@ -123,7 +123,7 @@ public class Shift implements DatabaseObject {
         if (getId() < 0) {
             mId = Long.valueOf(db.insert(TABLE_NAME, null, contentValues)).intValue();
         } else {
-            mId = Long.valueOf(db.update(TABLE_NAME, contentValues, ID_COLUMN + "=" + getId(), null)).intValue();
+            Long.valueOf(db.update(TABLE_NAME, contentValues, ID_COLUMN + "=" + getId(), null)).intValue();
         }
         db.close();
         dbOpener.close();
@@ -138,28 +138,6 @@ public class Shift implements DatabaseObject {
         contentValues.put(TIME_TO_COLUMN, mTimeTo);
         contentValues.put(SORT_ORDER_COLUMN, mSortOrder);
         return contentValues;
-    }
-    
-    public Bundle toBundle() {
-        Bundle shiftBundle = new Bundle();
-        shiftBundle.putInt(ID_COLUMN, getId());
-        shiftBundle.putString(NAME_COLUMN, getName());
-        shiftBundle.putInt(COLOUR_COLUMN, getColour());
-        shiftBundle.putString(TIME_FROM_COLUMN, getTimeFrom());
-        shiftBundle.putString(TIME_TO_COLUMN, getTimeTo());
-        shiftBundle.putInt(SORT_ORDER_COLUMN, getSortOrder());
-
-        return shiftBundle;
-    }
-
-    public static Shift fromBundle(Bundle aBundle) {
-        return new Shift(
-                aBundle.getInt(ID_COLUMN),
-                aBundle.getString(NAME_COLUMN),
-                aBundle.getInt(COLOUR_COLUMN),
-                aBundle.getString(TIME_FROM_COLUMN),
-                aBundle.getString(TIME_TO_COLUMN),
-                aBundle.getInt(SORT_ORDER_COLUMN));
     }
 
     public boolean isValid() {

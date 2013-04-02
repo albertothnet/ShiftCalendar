@@ -47,15 +47,15 @@ public class NewShiftDialogFragment extends DialogFragment {
         final Bundle shiftBundle = getArguments();
         if (shiftBundle != null) {
 
-            mShift = Shift.fromBundle(shiftBundle);
+            mShift = (Shift) shiftBundle.get("shift");
 
             builder.setTitle(R.string.edit_shift_title);
-            editTextName.setText(shiftBundle.getString(Shift.NAME_COLUMN));
+            editTextName.setText(mShift.getName());
 
-            spinnerColour.setSelection(ColourUtils.getColourOrdinal(shiftBundle.getInt(Shift.COLOUR_COLUMN)) - 1);
+            spinnerColour.setSelection(ColourUtils.getColourOrdinal(mShift.getColour()) - 1);
 
-            editTextTimeFrom.setText(shiftBundle.getString(Shift.TIME_FROM_COLUMN));
-            editTextTimeTo.setText(shiftBundle.getString(Shift.TIME_TO_COLUMN));
+            editTextTimeFrom.setText(mShift.getTimeFrom());
+            editTextTimeTo.setText(mShift.getTimeTo());
         } else {
             builder.setTitle(R.string.new_shift_title);
         }

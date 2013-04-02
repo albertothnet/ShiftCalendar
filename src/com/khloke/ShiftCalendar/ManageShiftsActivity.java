@@ -5,19 +5,19 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.*;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.khloke.ShiftCalendar.objects.Shift;
+import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.khloke.ShiftCalendar.utils.StringUtils.notEmptyOrNull;
@@ -30,9 +30,9 @@ import static com.khloke.ShiftCalendar.utils.StringUtils.notEmptyOrNull;
  */
 public class ManageShiftsActivity extends FragmentActivity {
 
-    List<Shift> mShifts;
-    SimpleAdapter mShiftArrayAdapter;
-    ListView mShiftListView;
+    ArrayList<Shift> mShifts;
+    ShiftArrayAdapter mShiftArrayAdapter;
+    DragSortListView mShiftListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,43 +43,21 @@ public class ManageShiftsActivity extends FragmentActivity {
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // TODO: Load up all current shifts
-        mShifts = Shift.loadAll(this.getApplicationContext());
+        //Load up all current shifts
+        mShifts = new ArrayList<Shift>(Shift.loadAll(this.getApplicationContext()));
+        Collections.sort(mShifts, new Shift.ShiftComparator());
 
-        mShiftListView = (ListView) findViewById(R.id.shiftListView);
+        mShiftListView = (DragSortListView) findViewById(R.id.shiftListView);
 
-        List<HashMap<String, Shift>> shiftTexts = new ArrayList<HashMap<String, Shift>>();
-        for (Shift shift:mShifts) {
-            HashMap<String, Shift> stringShiftHashMap = new HashMap<String, Shift>();
-            stringShiftHashMap.put("shift", shift);
-            shiftTexts.add(stringShiftHashMap);
-        }
-
-        mShiftArrayAdapter = new SimpleAdapter(this, shiftTexts, R.layout.shift_item, new String[]{"shift"}, new int[] {R.id.shiftNameView}) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View layout = super.getView(position, convertView, parent);
-                TextView nameView = (TextView) layout.findViewById(R.id.shiftNameView);
-
-                Shift item = ((HashMap<String, Shift>)getItem(position)).get("shift");
-
-                StringBuilder titleBuilder = new StringBuilder(item.getName());
-                if (notEmptyOrNull(item.getTimeFrom()) && notEmptyOrNull(item.getTimeTo())) {
-                    titleBuilder.append(" ").append(item.getTimeFrom()).append("~").append(item.getTimeTo());
-                }
-                nameView.setText(titleBuilder.toString());
-                nameView.setTextColor(item.getColour());
-
-                return layout;
-            }
-        };
+        mShiftArrayAdapter = new ShiftArrayAdapter(mShifts);
         mShiftListView.setAdapter(mShiftArrayAdapter);
 
         mShiftListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Shift shift = mShifts.get(position);
-                Bundle shiftDetails = shift.toBundle();
+                Bundle shiftDetails = new Bundle();
+                shiftDetails.putSerializable("shift", shift);
 
                 NewShiftDialogFragment newShiftDialogFragment = new NewShiftDialogFragment();
                 newShiftDialogFragment.setArguments(shiftDetails);
@@ -123,6 +101,32 @@ public class ManageShiftsActivity extends FragmentActivity {
             }
         });
 
+        mShiftListView.setDropListener(new DragSortListView.DropListener() {
+            @Override
+            public void drop(int from, int to) {
+                Shift shift = mShifts.get(from);
+                mShifts.remove(from);
+                mShifts.add(to, shift);
+
+                AsyncTask<Shift, String, Boolean> savingTask = new AsyncTask<Shift, String, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(Shift... params) {
+                        for (int i = 0; i < params.length; i++) {
+                            Shift shift1 = params[i];
+                            shift1.setSortOrder(i);
+                            shift1.save(ManageShiftsActivity.this);
+                        }
+
+                        return true;
+                    }
+                };
+
+                savingTask.execute(mShifts.toArray(new Shift[mShifts.size()]));
+
+                refresh();
+            }
+        });
+
     }
 
     @Override
@@ -156,7 +160,30 @@ public class ManageShiftsActivity extends FragmentActivity {
     }
 
     public void refresh() {
-        Collections.sort(mShifts, new Shift.ShiftComparator());
         mShiftArrayAdapter.notifyDataSetChanged();
+    }
+
+    private class ShiftArrayAdapter extends ArrayAdapter<Shift> {
+
+        public ShiftArrayAdapter(List<Shift> aShifts) {
+            super(ManageShiftsActivity.this, R.layout.shift_item, R.id.shiftNameView, aShifts);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View layout = super.getView(position, convertView, parent);
+            TextView nameView = (TextView) layout.findViewById(R.id.shiftNameView);
+
+            Shift item = mShifts.get(position);
+
+            StringBuilder titleBuilder = new StringBuilder(item.getName());
+            if (notEmptyOrNull(item.getTimeFrom()) && notEmptyOrNull(item.getTimeTo())) {
+                titleBuilder.append(" ").append(item.getTimeFrom()).append("~").append(item.getTimeTo());
+            }
+            nameView.setText(titleBuilder.toString());
+            nameView.setTextColor(item.getColour());
+
+            return layout;
+        }
     }
 }
