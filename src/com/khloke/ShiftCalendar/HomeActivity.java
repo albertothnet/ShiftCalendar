@@ -22,7 +22,6 @@ public class HomeActivity extends FragmentActivity {
 
     MonthCollectionPagerAdapter mMonthCollectionPagerAdapter;
     ArrayList<ArrayList<Calendar>> calendarDays;
-//    HashMap<Integer, GridView> currentGridViews = new HashMap<Integer, GridView>();
     HashMap<Long, ShiftCalendar> plottedShifts = new HashMap<Long, ShiftCalendar>();
     HashMap<Integer, Fragment> currentFragments = new HashMap<Integer, Fragment>();
 
@@ -69,6 +68,12 @@ public class HomeActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mMonthCollectionPagerAdapter);
         mViewPager.setCurrentItem(6);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
     }
 
     @Override
@@ -236,5 +241,11 @@ public class HomeActivity extends FragmentActivity {
         inflater.inflate(R.menu.menu_main, menu);
 
         return true;
+    }
+
+    public void refresh() {
+        if (mMonthCollectionPagerAdapter != null) {
+            mMonthCollectionPagerAdapter.notifyDataSetChanged();
+        }
     }
 }
