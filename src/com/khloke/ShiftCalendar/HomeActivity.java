@@ -10,50 +10,50 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.khloke.ShiftCalendar.objects.ShiftCalendar;
-import com.khloke.ShiftCalendar.utils.CalendarUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
+import static com.khloke.ShiftCalendar.utils.CalendarUtil.roundMillisToDate;
+
 public class HomeActivity extends FragmentActivity {
 
     MonthCollectionPagerAdapter mMonthCollectionPagerAdapter;
-    ArrayList<ArrayList<Calendar>> calendarDays;
+    Calendar[][][] calendarDays = new Calendar[12][7][7];
     HashMap<Long, ShiftCalendar> plottedShifts = new HashMap<Long, ShiftCalendar>();
     HashMap<Integer, Fragment> currentFragments = new HashMap<Integer, Fragment>();
 
     ViewPager mViewPager;
 
-    public static ArrayList<ArrayList<Calendar>> createCalendarList() {
-        ArrayList<ArrayList<Calendar>> fullYearCal = new ArrayList<ArrayList<Calendar>>();
+    public Calendar[][][] createCalendarList() {
+        Calendar[][][] result = new Calendar[12][7][7];
 
         for (int i = 0; i < 12; i++) {
-            ArrayList<Calendar> month = new ArrayList<Calendar>();
-
             Calendar calendar = Calendar.getInstance();
             //Set the calendar to i - 6 months ago
             calendar.add(Calendar.MONTH, (i-6));
 
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-
-            while (calendar.get(Calendar.DAY_OF_MONTH) != calendar.getActualMinimum(Calendar.DAY_OF_MONTH)) {
-                //Do nothing
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            if (dayOfMonth != 1) {
+                calendar.add(Calendar.DAY_OF_YEAR, -(dayOfMonth-1));
             }
 
-            calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMinimum(Calendar.DAY_OF_WEEK));
-
-            for (int j = 0; j < 49; j++) {
-
-                month.add((Calendar) calendar.clone());
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            if (dayOfWeek > 1) {
+                calendar.add(Calendar.DAY_OF_YEAR, -(dayOfWeek-1));
             }
-            fullYearCal.add(month);
+
+            for (int j = 0; j < 7; j++) {
+                for (int k = 0; k < 7; k++) {
+                    result[i][j][k] = (Calendar) calendar.clone();
+                    calendar.add(Calendar.DAY_OF_YEAR, 1);
+                }
+            }
         }
 
-        return fullYearCal;
+        return result;
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.main);
 
         calendarDays = createCalendarList();
-        plottedShifts = ShiftCalendar.loadFromDate(this, calendarDays.get(0).get(0));
+        plottedShifts = ShiftCalendar.loadFromDate(this, calendarDays[0][0][0]);
 
         mMonthCollectionPagerAdapter = new MonthCollectionPagerAdapter(getSupportFragmentManager());
 
@@ -155,12 +155,14 @@ public class HomeActivity extends FragmentActivity {
                                  Bundle savedInstanceState) {
             Bundle args = getArguments();
             final Integer month = (Integer) args.get(MONTH);
-            long todayLong = CalendarUtil.roundMillisToDate(Calendar.getInstance().getTimeInMillis());
-            int thisMonth = calendarDays.get(month).get(15).get(Calendar.MONTH);
+            long todayLong = roundMillisToDate(Calendar.getInstance().getTimeInMillis());
+            int thisMonth = calendarDays[month][2][0].get(Calendar.MONTH);
 
             TableLayout tableLayout = (TableLayout) inflater.inflate(R.layout.fragment_calendar, container, false);
             TableRow tableRow = null;
             for (int i = 0; i < 49; i++) {
+
+                //Create a separate table row for every 7 days (a week)
                 if (i % 7 == 0) {
                     if (i > 0) {
                         tableLayout.addView(tableRow);
@@ -169,27 +171,36 @@ public class HomeActivity extends FragmentActivity {
                     tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 }
 
-                Calendar date = calendarDays.get(month).get(i);
+                Calendar date = calendarDays[month][i / 7][i % 7];
+                long dayMillis = roundMillisToDate(date.getTimeInMillis());
+
+                //Create the date box.
                 LinearLayout linearLayout = new LinearLayout(HomeActivity.this);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
 
+                //Create the date text.
                 TextView dayOfMonthText = new TextView(HomeActivity.this);
                 dayOfMonthText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 dayOfMonthText.setGravity(Gravity.TOP);
-                dayOfMonthText.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
+                dayOfMonthText.setText(Long.toString(date.get(Calendar.DAY_OF_MONTH)));
                 linearLayout.addView(dayOfMonthText);
 
+                //Create the shift text layout
                 TextView shiftText = new TextView(HomeActivity.this);
                 shiftText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 shiftText.setGravity(Gravity.CENTER_HORIZONTAL);
                 shiftText.setPadding(0, 25, 0, 0);
                 shiftText.setTextSize(15);
-                long dayMillis = CalendarUtil.roundMillisToDate(date.getTimeInMillis());
+
+                //Check whether a shift is plotted for this day. If true, create the Shift text.
                 if (plottedShifts.containsKey(dayMillis)) {
                     ShiftCalendar shiftCalendar = plottedShifts.get(dayMillis);
                     shiftText.setTextColor(shiftCalendar.getShift().getColour());
                     shiftText.setText(shiftCalendar.getShift().getName(), TextView.BufferType.SPANNABLE);
                 }
+                linearLayout.addView(shiftText);
+
+                //Colour the background depending on the whether the day is of the current month.
                 linearLayout.setPadding(5, 5, 5, 5);
                 if (dayMillis == todayLong) {
                     linearLayout.setBackgroundResource(R.drawable.calendar_cell_today);
@@ -198,18 +209,24 @@ public class HomeActivity extends FragmentActivity {
                 } else {
                     linearLayout.setBackgroundResource(R.drawable.calendar_cell_dark);
                 }
-                linearLayout.addView(shiftText);
+
+                //On long press, show the shift input screen start from the date pressed.
                 linearLayout.setTag(R.id.table_cell_position_tag, i);
                 linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
                         Intent shiftInput = new Intent(getApplicationContext(), ShiftInputActivity.class);
-                        shiftInput.putExtra(ShiftInputActivity.ARG_STARTING_DATE, calendarDays.get(month).get((Integer) v.getTag(R.id.table_cell_position_tag)));
+                        Integer position = (Integer) v.getTag(R.id.table_cell_position_tag);
+                        shiftInput.putExtra(ShiftInputActivity.ARG_STARTING_DATE, calendarDays[month][position / 7][position % 7]);
                         startActivity(shiftInput);
                         return true;
                     }
                 });
-                tableRow.addView(linearLayout);
+
+                //Add the date box to the table row.
+                if (tableRow != null) {
+                    tableRow.addView(linearLayout);
+                }
             }
 
             return tableLayout;
